@@ -1,0 +1,1056 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Say It Perfectly — Wedding Speech Writing Service</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    /* ===== RESET & BASE ===== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #fff;
+      color: #1a1a1a;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+    h1, h2, h3, h4, h5, h6 { font-family: 'Playfair Display', serif; font-weight: 600; }
+    .container {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+    .container-wide {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* ===== HERO ===== */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 80px 24px 60px;
+      position: relative;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #C9A84C, #e8d5a3, #C9A84C);
+    }
+    .hero-badge {
+      display: inline-block;
+      font-size: 0.75rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: #C9A84C;
+      border: 1px solid rgba(201, 168, 76, 0.3);
+      padding: 6px 18px;
+      border-radius: 100px;
+      margin-bottom: 32px;
+      font-weight: 500;
+    }
+    .hero h1 {
+      font-size: clamp(2.4rem, 6vw, 4rem);
+      line-height: 1.15;
+      color: #111;
+      margin-bottom: 20px;
+      max-width: 700px;
+    }
+    .hero h1 em {
+      font-style: italic;
+      color: #C9A84C;
+    }
+    .hero p {
+      font-size: clamp(1rem, 2vw, 1.2rem);
+      color: #555;
+      max-width: 560px;
+      margin: 0 auto 36px;
+      font-weight: 300;
+      line-height: 1.7;
+    }
+    .hero .cta-btn {
+      display: inline-block;
+      background: #C9A84C;
+      color: #fff;
+      font-family: 'Inter', sans-serif;
+      font-size: 1.05rem;
+      font-weight: 600;
+      padding: 16px 40px;
+      border-radius: 8px;
+      text-decoration: none;
+      transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+      box-shadow: 0 4px 20px rgba(201, 168, 76, 0.35);
+      cursor: pointer;
+      border: none;
+    }
+    .hero .cta-btn:hover {
+      background: #b8973a;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 28px rgba(201, 168, 76, 0.45);
+    }
+
+    .scroll-indicator {
+      margin-top: 60px;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      color: #bbb;
+      animation: bounce 2s infinite;
+    }
+    @keyframes bounce {
+      0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+      40% { transform: translateY(-10px); }
+      60% { transform: translateY(-5px); }
+    }
+
+    /* ===== TRUST SIGNALS ===== */
+    .trust {
+      padding: 60px 0;
+      background: #fdfdfd;
+      border-top: 1px solid #f5f5f5;
+    }
+    .trust-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 48px;
+      text-align: center;
+    }
+    .trust-item .trust-icon {
+      font-size: 1.8rem;
+      margin-bottom: 20px;
+    }
+    .trust-item h3 {
+      font-size: 1.1rem;
+      margin-bottom: 12px;
+      color: #333;
+    }
+    .trust-item p {
+      font-size: 0.9rem;
+      color: #777;
+      font-weight: 300;
+    }
+
+    /* ===== FORM SECTION ===== */
+    .form-section {
+      padding: 80px 0;
+    }
+    .form-section h2 {
+      font-size: 2.2rem;
+      text-align: center;
+      margin-bottom: 12px;
+    }
+    .form-section .subtitle {
+      text-align: center;
+      color: #666;
+      font-weight: 300;
+      margin-bottom: 50px;
+    }
+
+    .progress-wrap {
+      margin-bottom: 40px;
+    }
+    .progress-bar-bg {
+      height: 6px;
+      background: #eee;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 12px;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      background: #C9A84C;
+      width: 12.5%;
+      transition: width 0.4s ease;
+    }
+    .progress-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #888;
+      font-weight: 500;
+    }
+
+    form {
+      background: #fff;
+      padding: 0;
+    }
+    .form-step {
+      display: none;
+      animation: fadeIn 0.4s ease forwards;
+    }
+    .form-step.active {
+      display: block;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .form-step h3 {
+      font-size: 1.4rem;
+      margin-bottom: 30px;
+      color: #111;
+      border-bottom: 1px solid #f0f0f0;
+      padding-bottom: 16px;
+    }
+
+    .form-group {
+      margin-bottom: 28px;
+    }
+    .form-group label {
+      display: block;
+      font-size: 0.95rem;
+      font-weight: 500;
+      margin-bottom: 10px;
+      color: #333;
+    }
+    .form-group input[type="text"],
+    .form-group input[type="date"],
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 14px 18px;
+      border: 1.5px solid #eee;
+      border-radius: 8px;
+      font-family: 'Inter', sans-serif;
+      font-size: 1rem;
+      transition: all 0.2s ease;
+      background: #f9f9f9;
+    }
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: #C9A84C;
+      background: #fff;
+      box-shadow: 0 0 0 4px rgba(201, 168, 76, 0.1);
+    }
+    .form-group textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+
+    .radio-group, .tone-options {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .radio-option {
+      position: relative;
+    }
+    .radio-option input[type="radio"] {
+      position: absolute;
+      opacity: 0;
+    }
+    .radio-option label {
+      display: block;
+      padding: 16px 20px;
+      background: #f9f9f9;
+      border: 1.5px solid #eee;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 400;
+      transition: all 0.2s ease;
+      margin-bottom: 0;
+    }
+    .radio-option input[type="radio"]:checked + label {
+      border-color: #C9A84C;
+      background: #fffaf0;
+      color: #C9A84C;
+      font-weight: 500;
+      box-shadow: 0 0 0 4px rgba(201, 168, 76, 0.1);
+    }
+
+    .form-btns {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 40px;
+      padding-top: 30px;
+      border-top: 1px solid #f0f0f0;
+    }
+    .btn-next, .btn-generate {
+      background: #111;
+      color: #fff;
+      border: none;
+      padding: 14px 32px;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      margin-left: auto;
+    }
+    .btn-next:hover, .btn-generate:hover {
+      background: #333;
+      transform: translateY(-1px);
+    }
+    .btn-back {
+      background: #fff;
+      color: #666;
+      border: 1.5px solid #eee;
+      padding: 14px 32px;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .btn-back:hover {
+      background: #f9f9f9;
+      color: #333;
+    }
+    .btn-generate {
+      background: #C9A84C;
+      box-shadow: 0 4px 12px rgba(201, 168, 76, 0.2);
+    }
+    .btn-generate:hover {
+      background: #b8973a;
+    }
+
+    /* ===== PAYMENT SECTION ===== */
+    .payment-section {
+      padding: 100px 0;
+      background: #fafafa;
+      display: none;
+    }
+    .payment-section.active {
+      display: block;
+    }
+    .payment-card {
+      background: #fff;
+      padding: 50px 40px;
+      border-radius: 16px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.05);
+      text-align: center;
+      max-width: 500px;
+      margin: 0 auto;
+    }
+    .lock-icon {
+      font-size: 3rem;
+      margin-bottom: 24px;
+    }
+    .payment-card h2 {
+      font-size: 1.8rem;
+      margin-bottom: 12px;
+    }
+    .payment-card p {
+      color: #666;
+      font-weight: 300;
+      margin-bottom: 30px;
+    }
+    .price {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 32px;
+      color: #111;
+    }
+    .price small {
+      font-size: 0.9rem;
+      font-weight: 400;
+      color: #999;
+      margin-left: 4px;
+    }
+    .pay-btn {
+      width: 100%;
+      background: #C9A84C;
+      color: #fff;
+      border: none;
+      padding: 18px;
+      border-radius: 8px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-bottom: 30px;
+    }
+    .pay-btn:hover {
+      background: #b8973a;
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(201, 168, 76, 0.25);
+    }
+    .pay-btn:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .code-input-group {
+      border-top: 1px solid #f0f0f0;
+      padding-top: 30px;
+      text-align: left;
+    }
+    .code-input-group label {
+      display: block;
+      font-size: 0.85rem;
+      color: #888;
+      margin-bottom: 12px;
+    }
+    .code-input-wrap {
+      display: flex;
+      gap: 10px;
+    }
+    .code-input-wrap input {
+      flex: 1;
+      padding: 12px 16px;
+      border: 1.5px solid #eee;
+      border-radius: 6px;
+      font-family: 'Inter', sans-serif;
+    }
+    .unlock-btn {
+      background: #111;
+      color: #fff;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .code-error {
+      color: #d32f2f;
+      font-size: 0.8rem;
+      margin-top: 8px;
+      display: none;
+    }
+    .payment-note {
+      margin-top: 24px;
+      font-size: 0.75rem;
+      color: #bbb;
+    }
+
+    /* ===== SPEECH SECTION ===== */
+    .speech-section {
+      padding: 80px 0;
+      display: none;
+    }
+    .speech-section.active {
+      display: block;
+    }
+    .speech-card {
+      background: #fff;
+      padding: 60px 48px;
+      border-radius: 12px;
+      border: 1px solid #f0f0f0;
+      box-shadow: 0 4px 30px rgba(0,0,0,0.02);
+    }
+    .speech-card .speech-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .speech-card .speech-header h2 {
+      font-size: 1.4rem;
+      color: #111;
+      font-family: 'Playfair Display', serif;
+    }
+    .speech-actions {
+      display: flex;
+      gap: 8px;
+    }
+    .speech-actions button {
+      padding: 8px 18px;
+      border: 1.5px solid #ddd;
+      border-radius: 6px;
+      background: #fff;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.82rem;
+      font-weight: 500;
+      color: #555;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .speech-actions button:hover {
+      border-color: #C9A84C;
+      color: #1a1a1a;
+    }
+    .speech-body {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.05rem;
+      line-height: 1.75;
+      color: #222;
+      white-space: pre-line;
+    }
+    .speech-body p {
+      margin-bottom: 16px;
+    }
+    .toast {
+      position: fixed;
+      bottom: 32px;
+      left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: #1a1a1a;
+      color: #fff;
+      padding: 12px 28px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      opacity: 0;
+      transition: all 0.35s ease;
+      pointer-events: none;
+      z-index: 1000;
+    }
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* ===== FOOTER ===== */
+    footer {
+      border-top: 1px solid #f0f0f0;
+      padding: 32px 0;
+      text-align: center;
+    }
+    footer p {
+      font-size: 0.8rem;
+      color: #bbb;
+      font-weight: 300;
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 768px) {
+      .trust-grid {
+        grid-template-columns: 1fr;
+        gap: 32px;
+      }
+      .trust-item p { max-width: 260px; }
+      .payment-card { padding: 32px 24px; }
+      .speech-card { padding: 32px 24px; }
+      .form-group .radio-option { min-width: 100%; }
+      .code-input-wrap { flex-direction: column; }
+      .speech-actions { width: 100%; }
+      .speech-actions button { flex: 1; text-align: center; }
+    }
+    @media (max-width: 480px) {
+      .hero { padding: 60px 20px 40px; }
+      .hero .cta-btn { width: 100%; text-align: center; }
+      .form-btns { flex-direction: column; }
+      .btn-back, .btn-next, .btn-generate { width: 100%; text-align: center; }
+      .btn-next, .btn-generate { margin-left: 0; }
+    }
+  </style>
+  <script src="https://js.stripe.com/v3/"></script>
+</head>
+<body>
+
+  <!-- ===== HERO ===== -->
+  <section class="hero" id="hero">
+    <span class="hero-badge">Say It Perfectly</span>
+    <h1>The Perfect Wedding Speech,<br>Written in <em>Minutes</em></h1>
+    <p>No more staring at a blank page. Answer a few simple questions and we'll write a heartfelt, personalised speech you'll be proud to deliver.</p>
+    <a href="#form" class="cta-btn">Write My Speech — £15</a>
+    <div class="scroll-indicator">Scroll down</div>
+  </section>
+
+  <!-- ===== TRUST SIGNALS ===== -->
+  <section class="trust">
+    <div class="container-wide">
+      <div class="trust-grid">
+        <div class="trust-item">
+          <div class="trust-icon">✍️</div>
+          <h3>Personalised to your story</h3>
+          <p>Every speech is crafted from your memories and relationship — never templated.</p>
+        </div>
+        <div class="trust-item">
+          <div class="trust-icon">⚡</div>
+          <h3>Ready in under 2 minutes</h3>
+          <p>Answer a few quick questions and your speech is generated instantly.</p>
+        </div>
+        <div class="trust-item">
+          <div class="trust-icon">💛</div>
+          <h3>Loved by 500+ wedding guests</h3>
+          <p>Couples and guests rave about speeches written with Say It Perfectly.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FORM ===== -->
+  <section class="form-section" id="form">
+    <div class="container">
+      <h2>Tell us about you &amp; the couple</h2>
+      <p class="subtitle">We'll use your answers to write a speech that sounds like you.</p>
+
+      <!-- Progress Bar -->
+      <div class="progress-wrap">
+        <div class="progress-bar-bg">
+          <div class="progress-bar-fill" id="progressFill"></div>
+        </div>
+        <div class="progress-label">
+          <span>Step <span class="step-num" id="stepNum">1</span> of 8</span>
+          <span id="stepName">Your Details</span>
+        </div>
+      </div>
+
+      <form id="speechForm" novalidate>
+
+        <!-- STEP 1 -->
+        <div class="form-step active" data-step="1">
+          <h3>Step 1 — Your Details</h3>
+          <div class="form-group">
+            <label for="yourName">Your full name</label>
+            <input type="text" id="yourName" placeholder="e.g. James Smith" required>
+          </div>
+          <div class="form-group">
+            <label for="yourRole">Your role at the wedding</label>
+            <select id="yourRole" required>
+              <option value="">Select your role…</option>
+              <option value="Best Man">Best Man</option>
+              <option value="Maid of Honour">Maid of Honour</option>
+              <option value="Father of the Bride">Father of the Bride</option>
+              <option value="Groom">Groom</option>
+              <option value="Bride">Bride</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+          <div class="form-btns">
+            <span></span>
+            <button type="button" class="btn-next" onclick="nextStep()">Next →</button>
+          </div>
+        </div>
+
+        <!-- STEP 2 -->
+        <div class="form-step" data-step="2">
+          <h3>Step 2 — The Couple</h3>
+          <div class="form-group">
+            <label for="partner1Name">First person's name</label>
+            <input type="text" id="partner1Name" placeholder="e.g. Sarah" required>
+          </div>
+          <div class="form-group">
+            <label for="partner2Name">Second person's name</label>
+            <input type="text" id="partner2Name" placeholder="e.g. Tom" required>
+          </div>
+          <div class="form-group">
+            <label for="weddingDate">Wedding date</label>
+            <input type="date" id="weddingDate" required>
+          </div>
+          <div class="form-btns">
+            <button type="button" class="btn-back" onclick="prevStep()">← Back</button>
+            <button type="button" class="btn-next" onclick="nextStep()">Next →</button>
+          </div>
+        </div>
+
+        <!-- STEP 3 -->
+        <div class="form-step" data-step="3">
+          <h3>Step 3 — Your Relationship</h3>
+          <div class="form-group">
+            <label for="yearsKnown">How long have you known them?</label>
+            <input type="text" id="yearsKnown" placeholder="e.g. 10 years, since university" required>
+          </div>
+          <div class="form-group">
+            <label for="relationship">Describe your relationship to the couple</label>
+            <textarea id="relationship" placeholder="e.g. I've been best friends with the groom since we were kids. I've watched their love story unfold from the very beginning." required></textarea>
+          </div>
+          <div class="form-btns">
+            <button type="button" class="btn-back" onclick="prevStep()">← Back</button>
+            <button type="button" class="btn-next" onclick="nextStep()">Next →</button>
+          </div>
+        </div>
+
+        <!-- STEP 4 -->
+        <div class="form-step" data-step="4">
+          <h3>Step 4 — Favourite Memories</h3>
+          <p style="color:#888;font-size:0.88rem;margin-bottom:20px;font-weight:300;">Share three memories or stories about the couple.</p>
+          <div class="form-group">
+            <label for="memory1">Memory 1</label>
+            <textarea id="memory1" placeholder="e.g. The first time they met at that dinner party…" required></textarea>
+          </div>
+          <div class="form-group">
+            <label for="memory2">Memory 2</label>
+            <textarea id="memory2" placeholder="e.g. That weekend trip when we all…" required></textarea>
+          </div>
+          <div class="form-group">
+            <label for="memory3">Memory 3</label>
+            <textarea id="memory3" placeholder="e.g. The proposal story they told everyone…" required></textarea>
+          </div>
+          <div class="form-btns">
+            <button type="button" class="btn-back" onclick="prevStep()">← Back</button>
+            <button type="button" class="btn-next" onclick="nextStep()">Next →</button>
+          </div>
+        </div>
+
+        <!-- STEP 5 -->
+        <div class="form-step" data-step="5">
+          <h3>Step 5 — Describe the Couple</h3>
+          <p style="color:#888;font-size:0.88rem;margin-bottom:20px;font-weight:300;">What three words best capture them as a couple?</p>
+          <div class="form-group">
+            <label for="word1">Word 1</label>
+            <input type="text" id="word1" placeholder="e.g. Adventurous" required>
+          </div>
+          <div class="form-group">
+            <label for="word2">Word 2</label>
+            <input type="text" id="word2" placeholder="e.g. Kind" required>
+          </div>
+          <div class="form-group">
+            <label for="word3">Word 3</label>
+            <input type="text" id="word3" placeholder="e.g. Hilarious" required>
+          </div>
+          <div class="form-btns">
+            <button type="button" class="btn-back" onclick="prevStep()">← Back</button>
+            <button type="button" class="btn-next" onclick="nextStep()">Next →</button>
+          </div>
+        </div>
+
+        <!-- STEP 6 -->
+        <div class="form-step" data-step="6">
+          <h3>Step 6 — Tone</h3>
+          <p style="color:#888;font-size:0.88rem;margin-bottom:20px;font-weight:300;">What tone would you like your speech to have?</p>
+          <div class="form-group">
+            <div class="tone-options">
+              <div class="radio-option">
+                <input type="radio" name="tone" id="toneHeartfelt" value="heartfelt and emotional">
+                <label for="toneHeartfelt">❤️ Heartfelt &amp; Emotional — Tear-jerking and sincere</label>
+              </div>
+              <div class="radio-option">
+                <input type="radio" name="tone" id="toneFunny" value="funny and light">
+                <label for="toneFunny">😂 Funny &amp; Light — Laughter and good vibes</label>
+              </div>
+              <div class="radio-option">
+                <input type="radio" name="tone" id="toneMix" value="mix of both">
+                <label for="toneMix">💛 Mix of Both — A perfect balance of heart and humour</label>
+              </div>
+            </div>
+          </div>
+          <div class="form-btns">
+            <button type="button" class="btn-back" onclick="prevStep()">← Back</button>
+            <button type="button" class="btn-next" onclick="nextStep()">Next →</button>
+          </div>
+        </div>
+
+        <!-- STEP 7 -->
+        <div class="form-step" data-step="7">
+          <h3>Step 7 — Topics to Avoid</h3>
+          <p style="color:#888;font-size:0.88rem;margin-bottom:20px;font-weight:300;">Anything we should steer clear of? Leave blank if nothing.</p>
+          <div class="form-group">
+            <label for="avoidTopics">Topics to avoid</label>
+            <textarea id="avoidTopics" placeholder="e.g. Don't mention ex-partners, that awkward proposal story, or the camping disaster…" style="min-height:100px;"></textarea>
+          </div>
+          <div class="form-btns">
+            <button type="button" class="btn-back" onclick="prevStep()">← Back</button>
+            <button type="button" class="btn-next" onclick="nextStep()">Next →</button>
+          </div>
+        </div>
+
+        <!-- STEP 8 -->
+        <div class="form-step" data-step="8">
+          <h3>Step 8 — Desired Length</h3>
+          <p style="color:#888;font-size:0.88rem;margin-bottom:20px;font-weight:300;">How long should your speech be?</p>
+          <div class="form-group">
+            <div class="radio-group">
+              <div class="radio-option">
+                <input type="radio" name="length" id="len2" value="2 minutes">
+                <label for="len2">2 minutes — Short &amp; sweet</label>
+              </div>
+              <div class="radio-option">
+                <input type="radio" name="length" id="len4" value="4 minutes">
+                <label for="len4">4 minutes — Just right</label>
+              </div>
+              <div class="radio-option">
+                <input type="radio" name="length" id="len6" value="6 minutes">
+                <label for="len6">6 minutes — Let me speak</label>
+              </div>
+            </div>
+          </div>
+          <div class="form-btns">
+            <button type="button" class="btn-back" onclick="prevStep()">← Back</button>
+            <button type="button" class="btn-generate" onclick="generateSpeech(event)">✨ Generate My Speech</button>
+          </div>
+        </div>
+
+      </form>
+    </div>
+  </section>
+
+  <!-- ===== PAYMENT ===== -->
+  <section class="payment-section" id="paymentSection">
+    <div class="container">
+      <div class="payment-card">
+        <div class="lock-icon">🔐</div>
+        <h2>Your Speech is Ready</h2>
+        <p>Unlock it for just £15 — a small price for a speech you'll remember forever.</p>
+        <div class="price">£15 <small>one-time</small></div>
+
+        <button class="pay-btn" id="payBtn" onclick="handlePay()">💳 Pay £15</button>
+
+        <p style="font-size:0.85rem;color:#999;margin-bottom:20px;">Complete payment to receive your code</p>
+
+        <div class="code-input-group">
+          <label for="paymentCode">Already have a code? Enter it here</label>
+          <div class="code-input-wrap">
+            <input type="text" id="paymentCode" placeholder="e.g. SIP-ABC123" autocomplete="off">
+            <button class="unlock-btn" onclick="unlockSpeech()">Unlock</button>
+          </div>
+          <div class="code-error" id="codeError">Invalid code. Please try again.</div>
+        </div>
+        <div class="payment-note">Payment confirmation codes are sent via email after purchase.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SPEECH ===== -->
+  <section class="speech-section" id="speechSection">
+    <div class="container">
+      <div class="speech-card">
+        <div class="speech-header">
+          <h2>Your Wedding Speech 🎉</h2>
+          <div class="speech-actions">
+            <button onclick="copySpeech()">📋 Copy Speech</button>
+            <button onclick="downloadPDF()">📄 Download PDF</button>
+          </div>
+        </div>
+        <div class="speech-body" id="speechBody">
+          <!-- Generated speech content goes here -->
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== TOAST ===== -->
+  <div class="toast" id="toast"></div>
+
+  <!-- ===== FOOTER ===== -->
+  <footer>
+    <div class="container">
+      <p>© Say It Perfectly 2026. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+    // ===== CONFIG =====
+    const API_URL = ''; // Relative to the server
+    const STRIPE_PK = 'pk_test_...'; // Update with real PK
+    const stripe = Stripe(STRIPE_PK);
+
+    // ===== FORM NAVIGATION =====
+    let currentStep = 1;
+    const totalSteps = 8;
+
+    const stepNames = {
+      1: 'Your Details', 2: 'The Couple', 3: 'Your Relationship',
+      4: 'Favourite Memories', 5: 'Describe the Couple', 6: 'Tone',
+      7: 'Topics to Avoid', 8: 'Desired Length'
+    };
+
+    function updateProgress() {
+      const pct = ((currentStep - 1) / (totalSteps - 1)) * 100;
+      const fill = document.getElementById('progressFill');
+      if(fill) fill.style.width = pct + '%';
+      const sNum = document.getElementById('stepNum');
+      if(sNum) sNum.textContent = currentStep;
+      const sName = document.getElementById('stepName');
+      if(sName) sName.textContent = stepNames[currentStep] || '';
+    }
+
+    function showStep(step) {
+      document.querySelectorAll('.form-step').forEach(el => el.classList.remove('active'));
+      const nextStepEl = document.querySelector(`.form-step[data-step="${step}"]`);
+      if(nextStepEl) nextStepEl.classList.add('active');
+      currentStep = step;
+      updateProgress();
+      document.getElementById('form').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function validateStep(step) {
+      const stepEl = document.querySelector(`.form-step[data-step="${step}"]`);
+      if(!stepEl) return true;
+      const inputs = stepEl.querySelectorAll('input[required], textarea[required], select[required]');
+      for (const el of inputs) {
+        if (!el.value.trim()) {
+          el.style.borderColor = '#d32f2f';
+          el.addEventListener('input', function handler() {
+            el.style.borderColor = '';
+            el.removeEventListener('input', handler);
+          }, { once: true });
+          showToast('Please fill in all required fields.');
+          return false;
+        }
+      }
+      if (step === 6) {
+        const checked = stepEl.querySelector('input[name="tone"]:checked');
+        if (!checked) { showToast('Please select a tone.'); return false; }
+      }
+      if (step === 8) {
+        const checked = stepEl.querySelector('input[name="length"]:checked');
+        if (!checked) { showToast('Please select a length.'); return false; }
+      }
+      return true;
+    }
+
+    function nextStep() {
+      if (!validateStep(currentStep)) return;
+      if (currentStep < totalSteps) showStep(currentStep + 1);
+    }
+
+    function prevStep() {
+      if (currentStep > 1) showStep(currentStep - 1);
+    }
+
+    // ===== GENERATE SPEECH =====
+    async function generateSpeech(e) {
+      e.preventDefault();
+      if (!validateStep(8)) return;
+
+      const data = {
+        yourName: document.getElementById('yourName').value,
+        yourRole: document.getElementById('yourRole').value,
+        partner1: document.getElementById('partner1Name').value,
+        partner2: document.getElementById('partner2Name').value,
+        weddingDate: document.getElementById('weddingDate').value,
+        yearsKnown: document.getElementById('yearsKnown').value,
+        relationship: document.getElementById('relationship').value,
+        memory1: document.getElementById('memory1').value,
+        memory2: document.getElementById('memory2').value,
+        memory3: document.getElementById('memory3').value,
+        word1: document.getElementById('word1').value,
+        word2: document.getElementById('word2').value,
+        word3: document.getElementById('word3').value,
+        tone: document.querySelector('input[name="tone"]:checked')?.value || '',
+        avoid: document.getElementById('avoidTopics').value,
+        length: document.querySelector('input[name="length"]:checked')?.value || ''
+      };
+
+      // Mock generation of text
+      const speech = generateSpeechText(data);
+      window._currentSpeechData = data;
+      window._generatedSpeech = speech;
+
+      // Hide form, show payment
+      document.querySelector('.form-section').style.display = 'none';
+      document.getElementById('paymentSection').classList.add('active');
+      document.getElementById('paymentSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function generateSpeechText(data) {
+      const { yourName, yourRole, partner1, partner2, yearsKnown, relationship, memory1, memory2, memory3, word1, word2, word3, tone, avoid, length } = data;
+      const coupleDisplay = `${partner1} and ${partner2}`;
+
+      const toneIntro = tone === 'funny and light'
+        ? `Alright, everyone — settle in. I've been asked to say a few words, and trust me, I've got plenty.`
+        : tone === 'heartfelt and emotional'
+        ? `Good evening, everyone. Standing here today, looking at ${coupleDisplay}, I'm overwhelmed with emotion.`
+        : `Good evening, everyone. I've been thinking about what to say today, and I realised the only way to do this is with a little bit of heart and a little bit of laughter.`;
+
+      const knownPhrase = yearsKnown ? `I've had the privilege of knowing ${coupleDisplay} for ${yearsKnown}.` : `I've had the privilege of knowing ${coupleDisplay} for what feels like a lifetime.`;
+
+      const memorySection = [
+        memory1 && `One of my favourite memories — ${memory1}`,
+        memory2 && `Another moment I'll never forget — ${memory2}`,
+        memory3 && `And finally — ${memory3}`
+      ].filter(Boolean).join('\n\n');
+
+      return `${toneIntro}\n\n${knownPhrase}\n\n${relationship}\n\n${memorySection}\n\n${coupleDisplay}, you are ${word1}, ${word2}, and ${word3}. I wish you both a lifetime of happiness.\n\nCheers!`;
+    }
+
+    // ===== PAYMENT HANDLING =====
+    async function handlePay() {
+      const btn = document.getElementById('payBtn');
+      btn.disabled = true;
+      btn.textContent = 'Processing...';
+
+      try {
+        const response = await fetch(`${API_URL}/create-checkout-session`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ speechData: window._currentSpeechData })
+        });
+        
+        const session = await response.json();
+        const result = await stripe.redirectToCheckout({ sessionId: session.id });
+
+        if (result.error) {
+          showToast(result.error.message);
+          btn.disabled = false;
+          btn.textContent = '💳 Pay £15';
+        }
+      } catch (err) {
+        console.error(err);
+        showToast('Payment service unavailable. Please try again later.');
+        btn.disabled = false;
+        btn.textContent = '💳 Pay £15';
+      }
+    }
+
+    async function unlockSpeech() {
+      const code = document.getElementById('paymentCode').value.trim().toUpperCase();
+      const errorEl = document.getElementById('codeError');
+      
+      if (!code) {
+        showToast('Please enter a code.');
+        return;
+      }
+
+      try {
+        const response = await fetch(`${API_URL}/verify-code`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ code })
+        });
+        
+        const data = await response.json();
+
+        if (data.success) {
+          // Regenerate speech from stored data if needed, or use the mock
+          const speech = generateSpeechText(data.speechData);
+          document.getElementById('speechBody').textContent = speech;
+          
+          document.getElementById('paymentSection').style.display = 'none';
+          document.getElementById('speechSection').classList.add('active');
+          document.getElementById('speechSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
+          showToast('Speech unlocked! 🎉');
+        } else {
+          errorEl.style.display = 'block';
+          setTimeout(() => { errorEl.style.display = 'none'; }, 4000);
+        }
+      } catch (err) {
+        showToast('Verification failed. Please try again.');
+      }
+    }
+
+    // ===== UTILS =====
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 3000);
+    }
+
+    function copySpeech() {
+      const text = document.getElementById('speechBody').textContent;
+      navigator.clipboard.writeText(text).then(() => {
+        showToast('Speech copied to clipboard!');
+      });
+    }
+
+    function downloadPDF() {
+      showToast('Download started (Mock)');
+      // In a real app, this would generate a PDF or trigger a print
+      window.print();
+    }
+
+    // Check for success from Stripe Redirect
+    window.onload = () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get('success')) {
+        showToast('Payment successful! Your confirmation code will be emailed.');
+        // Optionally auto-scroll to the code input
+        document.getElementById('paymentSection').classList.add('active');
+        document.querySelector('.form-section').style.display = 'none';
+      }
+    };
+  </script>
+</body>
+</html>
