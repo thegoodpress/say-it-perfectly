@@ -544,6 +544,14 @@
     }
   </style>
   <script src="https://js.stripe.com/v3/"></script>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-XXXXXXXXXX');
+  </script>
 </head>
 <body>
 
@@ -835,6 +843,23 @@
     const STRIPE_PK = 'pk_test_...'; // Update with real PK
     const stripe = Stripe(STRIPE_PK);
 
+    // ===== ANALYTICS HELPERS =====
+    let formStartTime = null;
+    function trackEvent(name, params = {}) {
+      if (typeof gtag === 'function') {
+        gtag('event', name, params);
+      }
+      console.log(`[Analytics] ${name}`, params);
+    }
+
+    // Track first interaction
+    document.addEventListener('focusin', (e) => {
+      if (!formStartTime && e.target.closest('#speechForm')) {
+        formStartTime = performance.now();
+        trackEvent('form_start');
+      }
+    }, { once: true });
+
     // ===== FORM NAVIGATION =====
     let currentStep = 1;
     const totalSteps = 8;
@@ -853,6 +878,11 @@
       if(sNum) sNum.textContent = currentStep;
       const sName = document.getElementById('stepName');
       if(sName) sName.textContent = stepNames[currentStep] || '';
+      
+      trackEvent('form_step_view', { 
+        step_number: currentStep, 
+        step_name: stepNames[currentStep] 
+      });
     }
 
     function showStep(step) {
@@ -892,6 +922,12 @@
 
     function nextStep() {
       if (!validateStep(currentStep)) return;
+      
+      trackEvent('form_step_complete', { 
+        step_number: currentStep, 
+        step_name: stepNames[currentStep] 
+      });
+
       if (currentStep < totalSteps) showStep(currentStep + 1);
     }
 
@@ -903,6 +939,9 @@
     async function generateSpeech(e) {
       e.preventDefault();
       if (!validateStep(8)) return;
+
+      const generationStart = performance.now();
+      const timeToCompleteForm = formStartTime ? (generationStart - formStartTime) / 1000 : 0;
 
       const data = {
         yourName: document.getElementById('yourName').value,
@@ -931,8 +970,19 @@
         });
         const result = await response.json();
         
+        const generationEnd = performance.now();
+        const generationDuration = (generationEnd - generationStart) / 1000;
+
         window._currentSpeechData = data;
         window._generatedSpeech = result.speech;
+
+        trackEvent('speech_generated', {
+          time_to_complete_form: timeToCompleteForm,
+          generation_duration: generationDuration,
+          role: data.yourRole,
+          tone: data.tone,
+          length: data.length
+        });
 
         // Hide form, show payment
         document.querySelector('.form-section').style.display = 'none';
@@ -941,6 +991,7 @@
       } catch (err) {
         console.error(err);
         showToast('Error generating speech. Please try again.');
+        trackEvent('speech_generation_error', { error: err.message });
       }
     }
 
@@ -949,6 +1000,11 @@
       const btn = document.getElementById('payBtn');
       btn.disabled = true;
       btn.textContent = 'Processing...';
+
+      trackEvent('payment_initiated', {
+        amount: 15,
+        currency: 'GBP'
+      });
 
       try {
         const response = await fetch(`${API_URL}/create-checkout-session`, {
@@ -967,12 +1023,14 @@
           showToast(result.error.message);
           btn.disabled = false;
           btn.textContent = '💳 Pay £15';
+          trackEvent('payment_redirect_error', { error: result.error.message });
         }
       } catch (err) {
         console.error(err);
         showToast('Payment service unavailable. Please try again later.');
         btn.disabled = false;
         btn.textContent = '💳 Pay £15';
+        trackEvent('payment_service_error', { error: err.message });
       }
     }
 
@@ -984,6 +1042,8 @@
         showToast('Please enter a code.');
         return;
       }
+
+      trackEvent('unlock_attempt', { code_length: code.length });
 
       try {
         const response = await fetch(`${API_URL}/verify-code`, {
@@ -1002,12 +1062,15 @@
           document.getElementById('speechSection').classList.add('active');
           document.getElementById('speechSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
           showToast('Speech unlocked! 🎉');
+          trackEvent('speech_unlocked_success');
         } else {
           errorEl.style.display = 'block';
           setTimeout(() => { errorEl.style.display = 'none'; }, 4000);
+          trackEvent('speech_unlocked_failure', { message: data.message });
         }
       } catch (err) {
         showToast('Verification failed. Please try again.');
+        trackEvent('speech_unlocked_error', { error: err.message });
       }
     }
 
@@ -1023,11 +1086,13 @@
       const text = document.getElementById('speechBody').textContent;
       navigator.clipboard.writeText(text).then(() => {
         showToast('Speech copied to clipboard!');
+        trackEvent('speech_copied');
       });
     }
 
     function downloadPDF() {
       showToast('Download started (Mock)');
+      trackEvent('speech_download_attempt');
       // In a real app, this would generate a PDF or trigger a print
       window.print();
     }
@@ -1035,11 +1100,27 @@
     // Check for success from Stripe Redirect
     window.onload = () => {
       const urlParams = new URLSearchParams(window.location.search);
+      
+      // Page load time
+      if (window.performance) {
+        const loadTime = performance.now() / 1000;
+        trackEvent('page_load_complete', { load_time: loadTime });
+      }
+
       if (urlParams.get('success')) {
         showToast('Payment successful! Your confirmation code will be emailed.');
         // Optionally auto-scroll to the code input
         document.getElementById('paymentSection').classList.add('active');
         document.querySelector('.form-section').style.display = 'none';
+        
+        trackEvent('payment_success', {
+          session_id: urlParams.get('session_id')
+        });
+      }
+      
+      if (urlParams.get('canceled')) {
+        showToast('Payment cancelled.');
+        trackEvent('payment_cancelled');
       }
     };
   </script>
