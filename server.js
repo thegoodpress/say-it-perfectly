@@ -17,6 +17,7 @@ db.serialize(() => {
     stripe_session_id TEXT UNIQUE,
     confirmation_code TEXT UNIQUE,
     speech_data TEXT,
+    speech_text TEXT,
     is_paid INTEGER DEFAULT 0,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
   )`);
@@ -141,7 +142,11 @@ app.post('/verify-code', bodyParser.json(), (req, res) => {
   );
 });
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, '0.0.0.0', () => {
-  console.log(`Server running on http://0.0.0.0:${PORT}`);
-});
+if (process.env.NODE_ENV !== 'production') {
+  const PORT = process.env.PORT || 3000;
+  app.listen(PORT, '0.0.0.0', () => {
+    console.log(`Server running on http://0.0.0.0:${PORT}`);
+  });
+}
+
+module.exports = app;
