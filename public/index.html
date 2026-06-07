@@ -954,7 +954,10 @@
         const response = await fetch(`${API_URL}/create-checkout-session`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ speechData: window._currentSpeechData })
+          body: JSON.stringify({ 
+            speechData: window._currentSpeechData,
+            speechText: window._generatedSpeech
+          })
         });
         
         const session = await response.json();

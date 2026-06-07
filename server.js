@@ -27,7 +27,7 @@ app.use(express.static('public'));
 
 // 1. Create Stripe Checkout Session
 app.post('/create-checkout-session', bodyParser.json(), async (req, res) => {
-  const { speechData } = req.body;
+  const { speechData, speechText } = req.body;
 
   try {
     const session = await stripe.checkout.sessions.create({
@@ -50,8 +50,8 @@ app.post('/create-checkout-session', bodyParser.json(), async (req, res) => {
 
     // Generate temporary record
     db.run(
-      'INSERT INTO orders (stripe_session_id, speech_data) VALUES (?, ?)',
-      [session.id, JSON.stringify(speechData)],
+      'INSERT INTO orders (stripe_session_id, speech_data, speech_text) VALUES (?, ?, ?)',
+      [session.id, JSON.stringify(speechData), speechText],
       (err) => {
         if (err) console.error('DB Error:', err);
       }
@@ -124,14 +124,16 @@ app.post('/verify-code', bodyParser.json(), (req, res) => {
   const { code } = req.body;
 
   db.get(
-    'SELECT speech_data FROM orders WHERE confirmation_code = ? AND is_paid = 1',
+    'SELECT speech_data, speech_text FROM orders WHERE confirmation_code = ? AND is_paid = 1',
     [code],
     (err, row) => {
       if (err) return res.status(500).json({ error: 'Database error' });
       if (row) {
-        const speechData = JSON.parse(row.speech_data);
-        const speechText = generateSpeechText(speechData);
-        res.json({ success: true, speechData, speechText });
+        res.json({ 
+          success: true, 
+          speechData: JSON.parse(row.speech_data), 
+          speechText: row.speech_text 
+        });
       } else {
         res.json({ success: false, message: 'Invalid or unpaid code' });
       }
