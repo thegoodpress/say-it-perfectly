@@ -1,4 +1,23 @@
 <!DOCTYPE html>
+<!-- 
+  Say It Perfectly Analytics Documentation
+  =======================================
+  KPIs Tracked:
+  1. Form completion rate: Tracks form_started, form_step_X, and form_completed.
+  2. Payment conversion rate: Tracks payment_initiated, payment_completed, and payment_failed.
+  3. Average time to generation: Tracked via duration between form_started and speech_generated.
+  4. Page load time: Tracked via page_load_complete and paint_timings (FCP/LCP).
+
+  Events:
+  - form_started: Fired on first interaction with the form.
+  - form_step_X: Fired when step X is viewed (X=1-8).
+  - form_completed: Fired when the final step is submitted.
+  - speech_generated: Fired when the backend returns the generated speech.
+  - payment_initiated: Fired when the "Pay £15" button is clicked.
+  - payment_completed: Fired upon successful return from Stripe Checkout.
+  - payment_cancelled: Fired if the user cancels Stripe Checkout.
+  - paint_timings: Fired after page load with FCP and LCP data.
+-->
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -852,11 +871,39 @@
       console.log(`[Analytics] ${name}`, params);
     }
 
+    // Track Paint Timings
+    function trackPaintTimings() {
+      if (!window.performance || !window.PerformanceObserver) return;
+      
+      const observer = new PerformanceObserver((list) => {
+        list.getEntries().forEach((entry) => {
+          if (entry.name === 'first-contentful-paint') {
+            trackEvent('paint_timings', { 
+              timing_name: 'FCP', 
+              value: entry.startTime 
+            });
+          }
+        });
+      });
+      observer.observe({ type: 'paint', buffered: true });
+
+      // LCP
+      const lcpObserver = new PerformanceObserver((list) => {
+        const entries = list.getEntries();
+        const lastEntry = entries[entries.length - 1];
+        trackEvent('paint_timings', { 
+          timing_name: 'LCP', 
+          value: lastEntry.startTime 
+        });
+      });
+      lcpObserver.observe({ type: 'largest-contentful-paint', buffered: true });
+    }
+
     // Track first interaction
     document.addEventListener('focusin', (e) => {
       if (!formStartTime && e.target.closest('#speechForm')) {
         formStartTime = performance.now();
-        trackEvent('form_start');
+        trackEvent('form_started');
       }
     }, { once: true });
 
@@ -879,8 +926,7 @@
       const sName = document.getElementById('stepName');
       if(sName) sName.textContent = stepNames[currentStep] || '';
       
-      trackEvent('form_step_view', { 
-        step_number: currentStep, 
+      trackEvent(`form_step_${currentStep}`, { 
         step_name: stepNames[currentStep] 
       });
     }
@@ -923,11 +969,6 @@
     function nextStep() {
       if (!validateStep(currentStep)) return;
       
-      trackEvent('form_step_complete', { 
-        step_number: currentStep, 
-        step_name: stepNames[currentStep] 
-      });
-
       if (currentStep < totalSteps) showStep(currentStep + 1);
     }
 
@@ -939,6 +980,8 @@
     async function generateSpeech(e) {
       e.preventDefault();
       if (!validateStep(8)) return;
+
+      trackEvent('form_completed');
 
       const generationStart = performance.now();
       const timeToCompleteForm = formStartTime ? (generationStart - formStartTime) / 1000 : 0;
@@ -1023,14 +1066,14 @@
           showToast(result.error.message);
           btn.disabled = false;
           btn.textContent = '💳 Pay £15';
-          trackEvent('payment_redirect_error', { error: result.error.message });
+          trackEvent('payment_failed', { error: result.error.message });
         }
       } catch (err) {
         console.error(err);
         showToast('Payment service unavailable. Please try again later.');
         btn.disabled = false;
         btn.textContent = '💳 Pay £15';
-        trackEvent('payment_service_error', { error: err.message });
+        trackEvent('payment_failed', { error: err.message });
       }
     }
 
@@ -1101,10 +1144,11 @@
     window.onload = () => {
       const urlParams = new URLSearchParams(window.location.search);
       
-      // Page load time
+      // Page load time and Paint timings
       if (window.performance) {
         const loadTime = performance.now() / 1000;
         trackEvent('page_load_complete', { load_time: loadTime });
+        trackPaintTimings();
       }
 
       if (urlParams.get('success')) {
@@ -1113,7 +1157,7 @@
         document.getElementById('paymentSection').classList.add('active');
         document.querySelector('.form-section').style.display = 'none';
         
-        trackEvent('payment_success', {
+        trackEvent('payment_completed', {
           session_id: urlParams.get('session_id')
         });
       }
