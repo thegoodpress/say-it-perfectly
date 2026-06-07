@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const cors = require('cors');
@@ -5,7 +6,6 @@ const bodyParser = require('body-parser');
 const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
 const crypto = require('crypto');
-require('dotenv').config();
 
 const app = express();
 const db = new sqlite3.Database('./database.sqlite');
