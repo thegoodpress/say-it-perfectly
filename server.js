@@ -91,7 +91,35 @@ app.post('/webhook', bodyParser.raw({type: 'application/json'}), async (req, res
   res.json({received: true});
 });
 
-// 3. Verify Code Endpoint
+// 3. Speech Generation Logic (moved from frontend)
+function generateSpeechText(data) {
+  const { yourName, yourRole, partner1, partner2, yearsKnown, relationship, memory1, memory2, memory3, word1, word2, word3, tone, avoid, length } = data;
+  const coupleDisplay = `${partner1} and ${partner2}`;
+
+  const toneIntro = tone === 'funny and light'
+    ? `Alright, everyone — settle in. I've been asked to say a few words, and trust me, I've got plenty.`
+    : tone === 'heartfelt and emotional'
+    ? `Good evening, everyone. Standing here today, looking at ${coupleDisplay}, I'm overwhelmed with emotion.`
+    : `Good evening, everyone. I've been thinking about what to say today, and I realised the only way to do this is with a little bit of heart and a little bit of laughter.`;
+
+  const knownPhrase = yearsKnown ? `I've had the privilege of knowing ${coupleDisplay} for ${yearsKnown}.` : `I've had the privilege of knowing ${coupleDisplay} for what feels like a lifetime.`;
+
+  const memorySection = [
+    memory1 && `One of my favourite memories — ${memory1}`,
+    memory2 && `Another moment I'll never forget — ${memory2}`,
+    memory3 && `And finally — ${memory3}`
+  ].filter(Boolean).join('\n\n');
+
+  return `${toneIntro}\n\n${knownPhrase}\n\n${relationship}\n\n${memorySection}\n\n${coupleDisplay}, you are ${word1}, ${word2}, and ${word3}. I wish you both a lifetime of happiness.\n\nCheers!`;
+}
+
+// 4. Generate Speech Endpoint
+app.post('/generate-speech', bodyParser.json(), (req, res) => {
+  const speech = generateSpeechText(req.body);
+  res.json({ speech });
+});
+
+// 5. Verify Code Endpoint
 app.post('/verify-code', bodyParser.json(), (req, res) => {
   const { code } = req.body;
 
@@ -101,7 +129,9 @@ app.post('/verify-code', bodyParser.json(), (req, res) => {
     (err, row) => {
       if (err) return res.status(500).json({ error: 'Database error' });
       if (row) {
-        res.json({ success: true, speechData: JSON.parse(row.speech_data) });
+        const speechData = JSON.parse(row.speech_data);
+        const speechText = generateSpeechText(speechData);
+        res.json({ success: true, speechData, speechText });
       } else {
         res.json({ success: false, message: 'Invalid or unpaid code' });
       }

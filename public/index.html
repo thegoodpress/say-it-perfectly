@@ -923,36 +923,25 @@
         length: document.querySelector('input[name="length"]:checked')?.value || ''
       };
 
-      // Mock generation of text
-      const speech = generateSpeechText(data);
-      window._currentSpeechData = data;
-      window._generatedSpeech = speech;
+      try {
+        const response = await fetch(`${API_URL}/generate-speech`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+        const result = await response.json();
+        
+        window._currentSpeechData = data;
+        window._generatedSpeech = result.speech;
 
-      // Hide form, show payment
-      document.querySelector('.form-section').style.display = 'none';
-      document.getElementById('paymentSection').classList.add('active');
-      document.getElementById('paymentSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-
-    function generateSpeechText(data) {
-      const { yourName, yourRole, partner1, partner2, yearsKnown, relationship, memory1, memory2, memory3, word1, word2, word3, tone, avoid, length } = data;
-      const coupleDisplay = `${partner1} and ${partner2}`;
-
-      const toneIntro = tone === 'funny and light'
-        ? `Alright, everyone — settle in. I've been asked to say a few words, and trust me, I've got plenty.`
-        : tone === 'heartfelt and emotional'
-        ? `Good evening, everyone. Standing here today, looking at ${coupleDisplay}, I'm overwhelmed with emotion.`
-        : `Good evening, everyone. I've been thinking about what to say today, and I realised the only way to do this is with a little bit of heart and a little bit of laughter.`;
-
-      const knownPhrase = yearsKnown ? `I've had the privilege of knowing ${coupleDisplay} for ${yearsKnown}.` : `I've had the privilege of knowing ${coupleDisplay} for what feels like a lifetime.`;
-
-      const memorySection = [
-        memory1 && `One of my favourite memories — ${memory1}`,
-        memory2 && `Another moment I'll never forget — ${memory2}`,
-        memory3 && `And finally — ${memory3}`
-      ].filter(Boolean).join('\n\n');
-
-      return `${toneIntro}\n\n${knownPhrase}\n\n${relationship}\n\n${memorySection}\n\n${coupleDisplay}, you are ${word1}, ${word2}, and ${word3}. I wish you both a lifetime of happiness.\n\nCheers!`;
+        // Hide form, show payment
+        document.querySelector('.form-section').style.display = 'none';
+        document.getElementById('paymentSection').classList.add('active');
+        document.getElementById('paymentSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      } catch (err) {
+        console.error(err);
+        showToast('Error generating speech. Please try again.');
+      }
     }
 
     // ===== PAYMENT HANDLING =====
@@ -1003,9 +992,8 @@
         const data = await response.json();
 
         if (data.success) {
-          // Regenerate speech from stored data if needed, or use the mock
-          const speech = generateSpeechText(data.speechData);
-          document.getElementById('speechBody').textContent = speech;
+          // Use the speech text returned from the backend
+          document.getElementById('speechBody').textContent = data.speechText;
           
           document.getElementById('paymentSection').style.display = 'none';
           document.getElementById('speechSection').classList.add('active');
