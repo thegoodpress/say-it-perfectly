@@ -17,6 +17,7 @@
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
     "pg": "^8.11.3",
+    "@neondatabase/serverless": "^0.9.3",
     "sqlite3": "^6.0.1",
     "stripe": "^22.2.0"
   }
