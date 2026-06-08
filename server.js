@@ -4,24 +4,86 @@ const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const sqlite3 = require('sqlite3').verbose();
+const { Pool } = require('pg');
 const path = require('path');
 const crypto = require('crypto');
 
 const app = express();
-const db = new sqlite3.Database('./database.sqlite');
 
-// Initialize Database
-db.serialize(() => {
-  db.run(`CREATE TABLE IF NOT EXISTS orders (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
+// Database configuration
+let db;
+const isPostgres = !!process.env.DATABASE_URL;
+
+if (isPostgres) {
+  db = new Pool({
+    connectionString: process.env.DATABASE_URL,
+    ssl: { rejectUnauthorized: false }
+  });
+  
+  // Initialize Postgres
+  db.query(`CREATE TABLE IF NOT EXISTS orders (
+    id SERIAL PRIMARY KEY,
     stripe_session_id TEXT UNIQUE,
     confirmation_code TEXT UNIQUE,
     speech_data TEXT,
     speech_text TEXT,
     is_paid INTEGER DEFAULT 0,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-  )`);
-});
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  )`).catch(err => console.error('Postgres Init Error:', err));
+  
+} else {
+  db = new sqlite3.Database('./database.sqlite');
+  
+  // Initialize SQLite
+  db.serialize(() => {
+    db.run(`CREATE TABLE IF NOT EXISTS orders (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      stripe_session_id TEXT UNIQUE,
+      confirmation_code TEXT UNIQUE,
+      speech_data TEXT,
+      speech_text TEXT,
+      is_paid INTEGER DEFAULT 0,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    )`);
+  });
+}
+
+// Helper to run queries across both DBs
+async function runQuery(query, params = []) {
+  if (isPostgres) {
+    // Convert ? to $1, $2, etc for PG
+    let pgQuery = query;
+    params.forEach((_, i) => {
+      pgQuery = pgQuery.replace('?', `$${i + 1}`);
+    });
+    return db.query(pgQuery, params);
+  } else {
+    return new Promise((resolve, reject) => {
+      db.run(query, params, function(err) {
+        if (err) reject(err);
+        else resolve({ lastID: this.lastID, changes: this.changes });
+      });
+    });
+  }
+}
+
+async function getQuery(query, params = []) {
+  if (isPostgres) {
+    let pgQuery = query;
+    params.forEach((_, i) => {
+      pgQuery = pgQuery.replace('?', `$${i + 1}`);
+    });
+    const res = await db.query(pgQuery, params);
+    return res.rows[0];
+  } else {
+    return new Promise((resolve, reject) => {
+      db.get(query, params, (err, row) => {
+        if (err) reject(err);
+        else resolve(row);
+      });
+    });
+  }
+}
 
 app.use(cors());
 app.use(express.static('public'));
@@ -50,13 +112,10 @@ app.post('/create-checkout-session', bodyParser.json(), async (req, res) => {
     });
 
     // Generate temporary record
-    db.run(
+    await runQuery(
       'INSERT INTO orders (stripe_session_id, speech_data, speech_text) VALUES (?, ?, ?)',
-      [session.id, JSON.stringify(speechData), speechText],
-      (err) => {
-        if (err) console.error('DB Error:', err);
-      }
-    );
+      [session.id, JSON.stringify(speechData), speechText]
+    ).catch(err => console.error('DB Insert Error:', err));
 
     res.json({ id: session.id });
   } catch (error) {
@@ -80,19 +139,16 @@ app.post('/webhook', bodyParser.raw({type: 'application/json'}), async (req, res
     const session = event.data.object;
     const confirmationCode = 'SIP-' + crypto.randomBytes(3).toString('hex').toUpperCase();
 
-    db.run(
+    await runQuery(
       'UPDATE orders SET is_paid = 1, confirmation_code = ? WHERE stripe_session_id = ?',
-      [confirmationCode, session.id],
-      (err) => {
-        if (err) console.error('DB Update Error:', err);
-      }
-    );
+      [confirmationCode, session.id]
+    ).catch(err => console.error('DB Update Error:', err));
   }
 
   res.json({received: true});
 });
 
-// 3. Speech Generation Logic (moved from frontend)
+// 3. Speech Generation Logic
 function generateSpeechText(data) {
   const { yourName, yourRole, partner1, partner2, yearsKnown, relationship, memory1, memory2, memory3, word1, word2, word3, tone, avoid, length } = data;
   const coupleDisplay = `${partner1} and ${partner2}`;
@@ -121,25 +177,28 @@ app.post('/generate-speech', bodyParser.json(), (req, res) => {
 });
 
 // 5. Verify Code Endpoint
-app.post('/verify-code', bodyParser.json(), (req, res) => {
+app.post('/verify-code', async (req, res) => {
   const { code } = req.body;
 
-  db.get(
-    'SELECT speech_data, speech_text FROM orders WHERE confirmation_code = ? AND is_paid = 1',
-    [code],
-    (err, row) => {
-      if (err) return res.status(500).json({ error: 'Database error' });
-      if (row) {
-        res.json({ 
-          success: true, 
-          speechData: JSON.parse(row.speech_data), 
-          speechText: row.speech_text 
-        });
-      } else {
-        res.json({ success: false, message: 'Invalid or unpaid code' });
-      }
+  try {
+    const row = await getQuery(
+      'SELECT speech_data, speech_text FROM orders WHERE confirmation_code = ? AND is_paid = 1',
+      [code]
+    );
+    
+    if (row) {
+      res.json({ 
+        success: true, 
+        speechData: typeof row.speech_data === 'string' ? JSON.parse(row.speech_data) : row.speech_data, 
+        speechText: row.speech_text 
+      });
+    } else {
+      res.json({ success: false, message: 'Invalid or unpaid code' });
     }
-  );
+  } catch (err) {
+    console.error('Verify Error:', err);
+    res.status(500).json({ error: 'Database error' });
+  }
 });
 
 if (process.env.NODE_ENV !== 'production') {
