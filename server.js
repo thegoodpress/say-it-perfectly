@@ -4,7 +4,7 @@ const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const sqlite3 = require('sqlite3').verbose();
-const { Pool } = require('pg');
+const { Pool } = require('@neondatabase/serverless');
 const path = require('path');
 const crypto = require('crypto');
 
@@ -16,8 +16,7 @@ const isPostgres = !!process.env.DATABASE_URL;
 
 if (isPostgres) {
   db = new Pool({
-    connectionString: process.env.DATABASE_URL,
-    ssl: { rejectUnauthorized: false }
+    connectionString: process.env.DATABASE_URL
   });
   
   // Initialize Postgres
