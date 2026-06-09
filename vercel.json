@@ -28,6 +28,10 @@
                   "dest": "server.js"
           },
           {
+              "src": "/debug-gemini",
+              "dest": "server.js"
+          },
+          {
                   "src": "/best-man-speech",
                   "dest": "public/best-man-speech.html"
           },
