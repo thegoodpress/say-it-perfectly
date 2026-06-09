@@ -1141,7 +1141,10 @@
       btn.disabled = true;
       btn.textContent = 'Processing...';
 
-      trackEvent('payment_initiated', { amount: 15, currency: 'GBP' });
+      trackEvent('payment_initiated', {
+        amount: 15,
+        currency: 'GBP'
+      });
 
       window.location.href = 'https://buy.stripe.com/eVq00i24T6va01w0iU14400';
     }
