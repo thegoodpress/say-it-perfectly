@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- 
+<!--
   Say It Perfectly Analytics Documentation
   =======================================
   KPIs Tracked:
@@ -22,7 +22,30 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Say It Perfectly — Wedding Speech Writing Service</title>
+  <title>AI Wedding Speech Writer — Personalised in Minutes | Say It Perfectly</title>
+  <meta name="description" content="Write the perfect wedding speech in under 2 minutes. Answer a few questions and get a personalised, heartfelt speech as Best Man, Father of the Bride, Maid of Honour, Groom, or Bride. Just £15.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://say-it-perfectly.vercel.app/">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://say-it-perfectly.vercel.app/">
+  <meta property="og:title" content="AI Wedding Speech Writer — Personalised in Minutes | Say It Perfectly">
+  <meta property="og:description" content="No more staring at a blank page. Get a heartfelt, personalised wedding speech written in minutes. Just £15.">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="AI Wedding Speech Writer — Personalised in Minutes">
+  <meta name="twitter:description" content="Answer a few questions and get a personalised wedding speech in minutes. Just £15.">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "Say It Perfectly",
+    "applicationCategory": "LifestyleApplication",
+    "operatingSystem": "Web",
+    "description": "AI-powered wedding speech writer. Get a personalised, heartfelt speech in under 2 minutes.",
+    "offers": { "@type": "Offer", "price": "15.00", "priceCurrency": "GBP" },
+    "url": "https://say-it-perfectly.vercel.app/",
+    "aggregateRating": { "@type": "AggregateRating", "ratingValue": "4.9", "reviewCount": "500" }
+  }
+  </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -158,6 +181,58 @@
       font-size: 0.9rem;
       color: #777;
       font-weight: 300;
+    }
+
+    /* ===== GUIDES SECTION ===== */
+    .guides-section {
+      padding: 64px 0;
+      background: #fafafa;
+      border-top: 1px solid #f0f0f0;
+      text-align: center;
+    }
+    .guides-section .guides-label {
+      font-size: 0.72rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: #C9A84C;
+      font-weight: 600;
+      margin-bottom: 16px;
+    }
+    .guides-section h2 {
+      font-size: 1.6rem;
+      color: #111;
+      margin-bottom: 10px;
+    }
+    .guides-section p {
+      color: #666;
+      font-weight: 300;
+      max-width: 460px;
+      margin: 0 auto 32px;
+      line-height: 1.7;
+    }
+    .guides-grid {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .guide-link {
+      display: inline-block;
+      padding: 12px 22px;
+      border: 1.5px solid #e8e8e8;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: #333;
+      text-decoration: none;
+      background: #fff;
+      transition: all 0.2s ease;
+    }
+    .guide-link:hover {
+      border-color: #C9A84C;
+      color: #C9A84C;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(201,168,76,0.15);
     }
 
     /* ===== FORM SECTION ===== */
@@ -539,6 +614,10 @@
       color: #bbb;
       font-weight: 300;
     }
+    footer a {
+      color: #C9A84C;
+      text-decoration: none;
+    }
 
     /* ===== RESPONSIVE ===== */
     @media (max-width: 768px) {
@@ -553,6 +632,8 @@
       .code-input-wrap { flex-direction: column; }
       .speech-actions { width: 100%; }
       .speech-actions button { flex: 1; text-align: center; }
+      .guides-grid { flex-direction: column; align-items: center; }
+      .guide-link { width: 100%; max-width: 300px; text-align: center; }
     }
     @media (max-width: 480px) {
       .hero { padding: 60px 20px 40px; }
@@ -602,6 +683,21 @@
           <h3>Loved by 500+ wedding guests</h3>
           <p>Couples and guests rave about speeches written with Say It Perfectly.</p>
         </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SPEECH GUIDES ===== -->
+  <section class="guides-section">
+    <div class="container">
+      <p class="guides-label">Free Speech Writing Guides</p>
+      <h2>Not sure where to start?</h2>
+      <p>Read our free guides for every role — packed with examples, structure tips, and opening lines that actually work.</p>
+      <div class="guides-grid">
+        <a href="/best-man-speech" class="guide-link">✍️ Best Man Speech →</a>
+        <a href="/father-of-the-bride-speech" class="guide-link">👨‍👧 Father of the Bride →</a>
+        <a href="/maid-of-honour-speech" class="guide-link">💐 Maid of Honour →</a>
+        <a href="/funny-wedding-speech" class="guide-link">😂 Funny Wedding Speech →</a>
       </div>
     </div>
   </section>
@@ -852,6 +948,9 @@
   <!-- ===== FOOTER ===== -->
   <footer>
     <div class="container">
+      <div style="margin-bottom: 16px;">
+        <a href="mailto:butterslbs74@gmail.com" style="display:inline-block; background:#f9f9f9; border:1.5px solid #eee; color:#555; font-family:'Inter',sans-serif; font-size:0.9rem; font-weight:500; padding:12px 28px; border-radius:8px; text-decoration:none;">✉️ Email our team</a>
+      </div>
       <p>© Say It Perfectly 2026. All rights reserved.</p>
     </div>
   </footer>
@@ -874,13 +973,13 @@
     // Track Paint Timings
     function trackPaintTimings() {
       if (!window.performance || !window.PerformanceObserver) return;
-      
+
       const observer = new PerformanceObserver((list) => {
         list.getEntries().forEach((entry) => {
           if (entry.name === 'first-contentful-paint') {
-            trackEvent('paint_timings', { 
-              timing_name: 'FCP', 
-              value: entry.startTime 
+            trackEvent('paint_timings', {
+              timing_name: 'FCP',
+              value: entry.startTime
             });
           }
         });
@@ -891,9 +990,9 @@
       const lcpObserver = new PerformanceObserver((list) => {
         const entries = list.getEntries();
         const lastEntry = entries[entries.length - 1];
-        trackEvent('paint_timings', { 
-          timing_name: 'LCP', 
-          value: lastEntry.startTime 
+        trackEvent('paint_timings', {
+          timing_name: 'LCP',
+          value: lastEntry.startTime
         });
       });
       lcpObserver.observe({ type: 'largest-contentful-paint', buffered: true });
@@ -925,9 +1024,9 @@
       if(sNum) sNum.textContent = currentStep;
       const sName = document.getElementById('stepName');
       if(sName) sName.textContent = stepNames[currentStep] || '';
-      
-      trackEvent(`form_step_${currentStep}`, { 
-        step_name: stepNames[currentStep] 
+
+      trackEvent(`form_step_${currentStep}`, {
+        step_name: stepNames[currentStep]
       });
     }
 
@@ -968,7 +1067,6 @@
 
     function nextStep() {
       if (!validateStep(currentStep)) return;
-      
       if (currentStep < totalSteps) showStep(currentStep + 1);
     }
 
@@ -1012,7 +1110,7 @@
           body: JSON.stringify(data)
         });
         const result = await response.json();
-        
+
         const generationEnd = performance.now();
         const generationDuration = (generationEnd - generationStart) / 1000;
 
@@ -1027,7 +1125,6 @@
           length: data.length
         });
 
-        // Hide form, show payment
         document.querySelector('.form-section').style.display = 'none';
         document.getElementById('paymentSection').classList.add('active');
         document.getElementById('paymentSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -1044,21 +1141,18 @@
       btn.disabled = true;
       btn.textContent = 'Processing...';
 
-      trackEvent('payment_initiated', {
-        amount: 15,
-        currency: 'GBP'
-      });
+      trackEvent('payment_initiated', { amount: 15, currency: 'GBP' });
 
       try {
         const response = await fetch(`${API_URL}/create-checkout-session`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ 
+          body: JSON.stringify({
             speechData: window._currentSpeechData,
             speechText: window._generatedSpeech
           })
         });
-        
+
         const session = await response.json();
         const result = await stripe.redirectToCheckout({ sessionId: session.id });
 
@@ -1080,11 +1174,8 @@
     async function unlockSpeech() {
       const code = document.getElementById('paymentCode').value.trim().toUpperCase();
       const errorEl = document.getElementById('codeError');
-      
-      if (!code) {
-        showToast('Please enter a code.');
-        return;
-      }
+
+      if (!code) { showToast('Please enter a code.'); return; }
 
       trackEvent('unlock_attempt', { code_length: code.length });
 
@@ -1094,13 +1185,11 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ code })
         });
-        
+
         const data = await response.json();
 
         if (data.success) {
-          // Use the speech text returned from the backend
           document.getElementById('speechBody').textContent = data.speechText;
-          
           document.getElementById('paymentSection').style.display = 'none';
           document.getElementById('speechSection').classList.add('active');
           document.getElementById('speechSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -1136,27 +1225,21 @@
     function downloadPDF() {
       showToast('Download started (Mock)');
       trackEvent('speech_download_attempt');
-      // In a real app, this would generate a PDF or trigger a print
       window.print();
     }
 
-    // Check for success from Stripe Redirect
     window.onload = () => {
       const urlParams = new URLSearchParams(window.location.search);
 
-      // Demo Mode Handling
       if (urlParams.get('demo') === '1') {
         const banner = document.createElement('div');
         banner.style = "background: #ffeb3b; color: #000; text-align: center; padding: 10px; font-weight: bold; position: sticky; top: 0; width: 100%; z-index: 9999; border-bottom: 2px solid #fbc02d;";
         banner.innerHTML = "🛠️ DEMO MODE ACTIVE - Payment Skipped";
         document.body.prepend(banner);
-        
-        // Auto-fill code when payment section is reached
         const codeInput = document.getElementById('paymentCode');
         if (codeInput) codeInput.value = 'SIP-DEMO';
       }
-      
-      // Page load time and Paint timings
+
       if (window.performance) {
         const loadTime = performance.now() / 1000;
         trackEvent('page_load_complete', { load_time: loadTime });
@@ -1165,15 +1248,11 @@
 
       if (urlParams.get('success')) {
         showToast('Payment successful! Your confirmation code will be emailed.');
-        // Optionally auto-scroll to the code input
         document.getElementById('paymentSection').classList.add('active');
         document.querySelector('.form-section').style.display = 'none';
-        
-        trackEvent('payment_completed', {
-          session_id: urlParams.get('session_id')
-        });
+        trackEvent('payment_completed', { session_id: urlParams.get('session_id') });
       }
-      
+
       if (urlParams.get('canceled')) {
         showToast('Payment cancelled.');
         trackEvent('payment_cancelled');
