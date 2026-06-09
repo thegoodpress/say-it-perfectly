@@ -1143,6 +1143,18 @@
     // Check for success from Stripe Redirect
     window.onload = () => {
       const urlParams = new URLSearchParams(window.location.search);
+
+      // Demo Mode Handling
+      if (urlParams.get('demo') === '1') {
+        const banner = document.createElement('div');
+        banner.style = "background: #ffeb3b; color: #000; text-align: center; padding: 10px; font-weight: bold; position: sticky; top: 0; width: 100%; z-index: 9999; border-bottom: 2px solid #fbc02d;";
+        banner.innerHTML = "🛠️ DEMO MODE ACTIVE - Payment Skipped";
+        document.body.prepend(banner);
+        
+        // Auto-fill code when payment section is reached
+        const codeInput = document.getElementById('paymentCode');
+        if (codeInput) codeInput.value = 'SIP-DEMO';
+      }
       
       // Page load time and Paint timings
       if (window.performance) {

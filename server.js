@@ -179,6 +179,30 @@ app.post('/generate-speech', bodyParser.json(), (req, res) => {
 app.post('/verify-code', async (req, res) => {
   const { code } = req.body;
 
+  // Handle Demo Code
+  if (code === 'SIP-DEMO') {
+    const demoData = {
+      yourName: 'Alex',
+      yourRole: 'Best Man',
+      partner1: 'Sam',
+      partner2: 'Jordan',
+      yearsKnown: '15 years',
+      relationship: 'Best friends since university',
+      memory1: 'That time we got lost in the Highlands',
+      memory2: 'Helping Sam prepare for the big proposal',
+      memory3: 'Endless nights of gaming and pizza',
+      word1: 'loyal',
+      word2: 'hilarious',
+      word3: 'kind',
+      tone: 'funny and light'
+    };
+    return res.json({
+      success: true,
+      speechData: demoData,
+      speechText: generateSpeechText(demoData)
+    });
+  }
+
   try {
     const row = await getQuery(
       'SELECT speech_data, speech_text FROM orders WHERE confirmation_code = ? AND is_paid = 1',
