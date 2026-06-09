@@ -68,13 +68,19 @@ app.use(express.static('public'));
 app.get('/debug-gemini', async (req, res) => {
   const keySet = !!process.env.GEMINI_API_KEY;
   const keyPreview = process.env.GEMINI_API_KEY ? process.env.GEMINI_API_KEY.substring(0, 8) + '...' : 'NOT SET';
-  try {
-    const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
-    const result = await model.generateContent('Say hello in one word.');
-    res.json({ keySet, keyPreview, success: true, response: result.response.text() });
-  } catch (err) {
-    res.json({ keySet, keyPreview, success: false, error: err.message, status: err.status, details: err.toString() });
+  const models = ['gemini-1.5-flash', 'gemini-1.5-flash-latest', 'gemini-pro', 'gemini-2.0-flash'];
+  const results = {};
+  for (const modelName of models) {
+    try {
+      const model = genAI.getGenerativeModel({ model: modelName });
+      const result = await model.generateContent('Say hello in one word.');
+      results[modelName] = { success: true, response: result.response.text() };
+      break; // stop at first success
+    } catch (err) {
+      results[modelName] = { success: false, error: err.message?.substring(0, 200) };
+    }
   }
+  res.json({ keySet, keyPreview, results });
 });
 
 // 1. Generate Speech (free preview — no payment required)
