@@ -1,25 +1,19 @@
 require('dotenv').config();
 const express = require('express');
+const Anthropic = require('@anthropic-ai/sdk');
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const cors = require('cors');
 const bodyParser = require('body-parser');
-const sqlite3 = require('sqlite3').verbose();
 const { Pool } = require('@neondatabase/serverless');
-const path = require('path');
 const crypto = require('crypto');
 
 const app = express();
+const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
-// Database configuration
-let db;
-const isPostgres = !!process.env.DATABASE_URL;
-
-if (isPostgres) {
-  db = new Pool({
-    connectionString: process.env.DATABASE_URL
-  });
-  
-  // Initialize Postgres
+// Database — Postgres only (optional; skipped if DATABASE_URL not set)
+let db = null;
+if (process.env.DATABASE_URL) {
+  db = new Pool({ connectionString: process.env.DATABASE_URL });
   db.query(`CREATE TABLE IF NOT EXISTS orders (
     id SERIAL PRIMARY KEY,
     stripe_session_id TEXT UNIQUE,
@@ -28,69 +22,83 @@ if (isPostgres) {
     speech_text TEXT,
     is_paid INTEGER DEFAULT 0,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-  )`).catch(err => console.error('Postgres Init Error:', err));
-  
-} else {
-  db = new sqlite3.Database('./database.sqlite');
-  
-  // Initialize SQLite
-  db.serialize(() => {
-    db.run(`CREATE TABLE IF NOT EXISTS orders (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      stripe_session_id TEXT UNIQUE,
-      confirmation_code TEXT UNIQUE,
-      speech_data TEXT,
-      speech_text TEXT,
-      is_paid INTEGER DEFAULT 0,
-      created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-    )`);
-  });
+  )`).catch(err => console.error('Postgres init error:', err));
 }
 
-// Helper to run queries across both DBs
 async function runQuery(query, params = []) {
-  if (isPostgres) {
-    // Convert ? to $1, $2, etc for PG
-    let pgQuery = query;
-    params.forEach((_, i) => {
-      pgQuery = pgQuery.replace('?', `$${i + 1}`);
-    });
-    return db.query(pgQuery, params);
-  } else {
-    return new Promise((resolve, reject) => {
-      db.run(query, params, function(err) {
-        if (err) reject(err);
-        else resolve({ lastID: this.lastID, changes: this.changes });
-      });
-    });
-  }
+  if (!db) return null;
+  let pgQuery = query;
+  params.forEach((_, i) => { pgQuery = pgQuery.replace('?', `$${i + 1}`); });
+  return db.query(pgQuery, params);
 }
 
 async function getQuery(query, params = []) {
-  if (isPostgres) {
-    let pgQuery = query;
-    params.forEach((_, i) => {
-      pgQuery = pgQuery.replace('?', `$${i + 1}`);
-    });
-    const res = await db.query(pgQuery, params);
-    return res.rows[0];
-  } else {
-    return new Promise((resolve, reject) => {
-      db.get(query, params, (err, row) => {
-        if (err) reject(err);
-        else resolve(row);
-      });
-    });
-  }
+  if (!db) return null;
+  let pgQuery = query;
+  params.forEach((_, i) => { pgQuery = pgQuery.replace('?', `$${i + 1}`); });
+  const res = await db.query(pgQuery, params);
+  return res.rows[0];
 }
 
 app.use(cors());
 app.use(express.static('public'));
 
-// 1. Create Stripe Checkout Session
+// ===== SPEECH GENERATION WITH CLAUDE =====
+async function generateSpeech(data) {
+  const {
+    yourName, yourRole, partner1, partner2, weddingDate,
+    yearsKnown, relationship, memory1, memory2, memory3,
+    word1, word2, word3, tone, avoid, length
+  } = data;
+
+  const wordCount = length === '2 minutes' ? '250-300 words'
+    : length === '6 minutes' ? '800-850 words'
+    : '500-550 words';
+
+  const avoidNote = avoid ? `\nTopics to avoid entirely: ${avoid}` : '';
+
+  const message = await anthropic.messages.create({
+    model: 'claude-sonnet-4-6',
+    max_tokens: 1500,
+    messages: [{
+      role: 'user',
+      content: `Write a personalised wedding speech with the following details:
+
+Speaker: ${yourName} (${yourRole})
+Couple: ${partner1} and ${partner2}
+How long they have known them: ${yearsKnown}
+Relationship to the couple: ${relationship}
+
+Three memories or stories to weave in naturally:
+1. ${memory1}
+2. ${memory2}
+3. ${memory3}
+
+Three words that capture the couple: ${word1}, ${word2}, ${word3}
+Tone: ${tone}${avoidNote}
+Target length: ${wordCount}
+
+Write the speech as if ${yourName} is delivering it live at the wedding. Make it feel warm, genuine, and personal — not generic. Open naturally, weave the memories in as real stories, celebrate the couple using those three words, and close with a heartfelt toast to ${partner1} and ${partner2}. Do not use any placeholder text.`
+    }]
+  });
+
+  return message.content[0].text;
+}
+
+// 1. Generate Speech
+app.post('/generate-speech', bodyParser.json(), async (req, res) => {
+  try {
+    const speech = await generateSpeech(req.body);
+    res.json({ speech });
+  } catch (err) {
+    console.error('Speech generation error:', err);
+    res.status(500).json({ error: 'Failed to generate speech. Please try again.' });
+  }
+});
+
+// 2. Create Stripe Checkout Session
 app.post('/create-checkout-session', bodyParser.json(), async (req, res) => {
   const { speechData, speechText } = req.body;
-
   try {
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
@@ -101,7 +109,7 @@ app.post('/create-checkout-session', bodyParser.json(), async (req, res) => {
             name: 'Personalised Wedding Speech',
             description: 'Custom speech generated by Say It Perfectly',
           },
-          unit_amount: 1500, // £15.00
+          unit_amount: 1500,
         },
         quantity: 1,
       }],
@@ -110,24 +118,22 @@ app.post('/create-checkout-session', bodyParser.json(), async (req, res) => {
       cancel_url: `${req.headers.origin}/?canceled=true`,
     });
 
-    // Generate temporary record
     await runQuery(
       'INSERT INTO orders (stripe_session_id, speech_data, speech_text) VALUES (?, ?, ?)',
       [session.id, JSON.stringify(speechData), speechText]
-    ).catch(err => console.error('DB Insert Error:', err));
+    ).catch(err => console.error('DB insert error:', err));
 
     res.json({ id: session.id });
   } catch (error) {
-    console.error('Stripe Error:', error);
+    console.error('Stripe error:', error);
     res.status(500).json({ error: error.message });
   }
 });
 
-// 2. Stripe Webhook for Payment Confirmation
-app.post('/webhook', bodyParser.raw({type: 'application/json'}), async (req, res) => {
+// 3. Stripe Webhook
+app.post('/webhook', bodyParser.raw({ type: 'application/json' }), async (req, res) => {
   const sig = req.headers['stripe-signature'];
   let event;
-
   try {
     event = stripe.webhooks.constructEvent(req.body, sig, process.env.STRIPE_WEBHOOK_SECRET);
   } catch (err) {
@@ -137,70 +143,38 @@ app.post('/webhook', bodyParser.raw({type: 'application/json'}), async (req, res
   if (event.type === 'checkout.session.completed') {
     const session = event.data.object;
     const confirmationCode = 'SIP-' + crypto.randomBytes(3).toString('hex').toUpperCase();
-
     await runQuery(
       'UPDATE orders SET is_paid = 1, confirmation_code = ? WHERE stripe_session_id = ?',
       [confirmationCode, session.id]
-    ).catch(err => console.error('DB Update Error:', err));
+    ).catch(err => console.error('DB update error:', err));
   }
 
-  res.json({received: true});
+  res.json({ received: true });
 });
 
-// 3. Speech Generation Logic
-function generateSpeechText(data) {
-  const { yourName, yourRole, partner1, partner2, yearsKnown, relationship, memory1, memory2, memory3, word1, word2, word3, tone, avoid, length } = data;
-  const coupleDisplay = `${partner1} and ${partner2}`;
-
-  const toneIntro = tone === 'funny and light'
-    ? `Alright, everyone — settle in. I've been asked to say a few words, and trust me, I've got plenty.`
-    : tone === 'heartfelt and emotional'
-    ? `Good evening, everyone. Standing here today, looking at ${coupleDisplay}, I'm overwhelmed with emotion.`
-    : `Good evening, everyone. I've been thinking about what to say today, and I realised the only way to do this is with a little bit of heart and a little bit of laughter.`;
-
-  const knownPhrase = yearsKnown ? `I've had the privilege of knowing ${coupleDisplay} for ${yearsKnown}.` : `I've had the privilege of knowing ${coupleDisplay} for what feels like a lifetime.`;
-
-  const memorySection = [
-    memory1 && `One of my favourite memories — ${memory1}`,
-    memory2 && `Another moment I'll never forget — ${memory2}`,
-    memory3 && `And finally — ${memory3}`
-  ].filter(Boolean).join('\n\n');
-
-  return `${toneIntro}\n\n${knownPhrase}\n\n${relationship}\n\n${memorySection}\n\n${coupleDisplay}, you are ${word1}, ${word2}, and ${word3}. I wish you both a lifetime of happiness.\n\nCheers!`;
-}
-
-// 4. Generate Speech Endpoint
-app.post('/generate-speech', bodyParser.json(), (req, res) => {
-  const speech = generateSpeechText(req.body);
-  res.json({ speech });
-});
-
-// 5. Verify Code Endpoint
-app.post('/verify-code', async (req, res) => {
+// 4. Verify Code
+app.post('/verify-code', bodyParser.json(), async (req, res) => {
   const { code } = req.body;
 
-  // Handle Demo Code
   if (code === 'SIP-DEMO') {
-    const demoData = {
-      yourName: 'Alex',
-      yourRole: 'Best Man',
-      partner1: 'Sam',
-      partner2: 'Jordan',
-      yearsKnown: '15 years',
-      relationship: 'Best friends since university',
-      memory1: 'That time we got lost in the Highlands',
-      memory2: 'Helping Sam prepare for the big proposal',
-      memory3: 'Endless nights of gaming and pizza',
-      word1: 'loyal',
-      word2: 'hilarious',
-      word3: 'kind',
-      tone: 'funny and light'
-    };
-    return res.json({
-      success: true,
-      speechData: demoData,
-      speechText: generateSpeechText(demoData)
-    });
+    try {
+      const demoData = {
+        yourName: 'Alex', yourRole: 'Best Man',
+        partner1: 'Sam', partner2: 'Jordan',
+        weddingDate: '', yearsKnown: '15 years',
+        relationship: 'Best friends since university — I was there from the very first date.',
+        memory1: 'That chaotic weekend in the Highlands where we got completely lost and Sam stayed completely calm the whole time.',
+        memory2: 'When Sam called me at midnight to ask for help planning the proposal — I had to keep the secret for three weeks.',
+        memory3: 'Watching Jordan walk into the room at their first flat viewing together and seeing Sam light up.',
+        word1: 'loyal', word2: 'hilarious', word3: 'kind',
+        tone: 'mix of both', avoid: '', length: '4 minutes'
+      };
+      const speechText = await generateSpeech(demoData);
+      return res.json({ success: true, speechText });
+    } catch (err) {
+      console.error('Demo speech error:', err);
+      return res.status(500).json({ error: 'Failed to generate demo speech.' });
+    }
   }
 
   try {
@@ -208,27 +182,24 @@ app.post('/verify-code', async (req, res) => {
       'SELECT speech_data, speech_text FROM orders WHERE confirmation_code = ? AND is_paid = 1',
       [code]
     );
-    
     if (row) {
-      res.json({ 
-        success: true, 
-        speechData: typeof row.speech_data === 'string' ? JSON.parse(row.speech_data) : row.speech_data, 
-        speechText: row.speech_text 
+      res.json({
+        success: true,
+        speechData: typeof row.speech_data === 'string' ? JSON.parse(row.speech_data) : row.speech_data,
+        speechText: row.speech_text
       });
     } else {
       res.json({ success: false, message: 'Invalid or unpaid code' });
     }
   } catch (err) {
-    console.error('Verify Error:', err);
+    console.error('Verify error:', err);
     res.status(500).json({ error: 'Database error' });
   }
 });
 
 if (process.env.NODE_ENV !== 'production') {
   const PORT = process.env.PORT || 3000;
-  app.listen(PORT, '0.0.0.0', () => {
-    console.log(`Server running on http://0.0.0.0:${PORT}`);
-  });
+  app.listen(PORT, '0.0.0.0', () => console.log(`Server running on http://0.0.0.0:${PORT}`));
 }
 
 module.exports = app;
