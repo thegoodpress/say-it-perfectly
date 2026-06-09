@@ -1,35 +1,51 @@
 {
-  "version": 2,
-  "builds": [
-    {
-      "src": "server.js",
-      "use": "@vercel/node"
-    },
-    {
-      "src": "public/**",
-      "use": "@vercel/static"
-    }
-  ],
-  "routes": [
-    {
-      "src": "/create-checkout-session",
-      "dest": "server.js"
-    },
-    {
-      "src": "/webhook",
-      "dest": "server.js"
-    },
-    {
-      "src": "/generate-speech",
-      "dest": "server.js"
-    },
-    {
-      "src": "/verify-code",
-      "dest": "server.js"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "public/$1"
-    }
-  ]
+    "version": 2,
+    "builds": [
+          {
+                  "src": "server.js",
+                  "use": "@vercel/node"
+          },
+          {
+                  "src": "public/**",
+                  "use": "@vercel/static"
+          }
+    ],
+    "routes": [
+          {
+                  "src": "/create-checkout-session",
+                  "dest": "server.js"
+          },
+          {
+                  "src": "/webhook",
+                  "dest": "server.js"
+          },
+          {
+                  "src": "/generate-speech",
+                  "dest": "server.js"
+          },
+          {
+                  "src": "/verify-code",
+                  "dest": "server.js"
+          },
+          {
+                  "src": "/best-man-speech",
+                  "dest": "public/best-man-speech.html"
+          },
+          {
+                  "src": "/father-of-the-bride-speech",
+                  "dest": "public/father-of-the-bride-speech.html"
+          },
+          {
+                  "src": "/maid-of-honour-speech",
+                  "dest": "public/maid-of-honour-speech.html"
+          },
+          {
+                  "src": "/funny-wedding-speech",
+                  "dest": "public/funny-wedding-speech.html"
+          },
+          {
+                  "src": "/(.*)",
+                  "dest": "public/$1"
+          }
+    ]
 }
