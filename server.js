@@ -1,6 +1,6 @@
 require('dotenv').config();
 const express = require('express');
-const Anthropic = require('@anthropic-ai/sdk');
+const { GoogleGenerativeAI } = require('@google/generative-ai');
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const cors = require('cors');
 const bodyParser = require('body-parser');
@@ -8,7 +8,7 @@ const { Pool } = require('@neondatabase/serverless');
 const crypto = require('crypto');
 
 const app = express();
-const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 // Database — Postgres only (optional; skipped if DATABASE_URL not set)
 let db = null;
@@ -43,7 +43,7 @@ async function getQuery(query, params = []) {
 app.use(cors());
 app.use(express.static('public'));
 
-// ===== SPEECH GENERATION WITH CLAUDE =====
+// ===== SPEECH GENERATION WITH GEMINI =====
 async function generateSpeech(data) {
   const {
     yourName, yourRole, partner1, partner2, weddingDate,
@@ -57,12 +57,7 @@ async function generateSpeech(data) {
 
   const avoidNote = avoid ? `\nTopics to avoid entirely: ${avoid}` : '';
 
-  const message = await anthropic.messages.create({
-    model: 'claude-sonnet-4-6',
-    max_tokens: 1500,
-    messages: [{
-      role: 'user',
-      content: `Write a personalised wedding speech with the following details:
+  const prompt = `Write a personalised wedding speech with the following details:
 
 Speaker: ${yourName} (${yourRole})
 Couple: ${partner1} and ${partner2}
@@ -78,11 +73,11 @@ Three words that capture the couple: ${word1}, ${word2}, ${word3}
 Tone: ${tone}${avoidNote}
 Target length: ${wordCount}
 
-Write the speech as if ${yourName} is delivering it live at the wedding. Make it feel warm, genuine, and personal — not generic. Open naturally, weave the memories in as real stories, celebrate the couple using those three words, and close with a heartfelt toast to ${partner1} and ${partner2}. Do not use any placeholder text.`
-    }]
-  });
+Write the speech as if ${yourName} is delivering it live at the wedding. Make it feel warm, genuine, and personal — not generic. Open naturally, weave the memories in as real stories, celebrate the couple using those three words, and close with a heartfelt toast to ${partner1} and ${partner2}. Do not use any placeholder text.`;
 
-  return message.content[0].text;
+  const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+  const result = await model.generateContent(prompt);
+  return result.response.text();
 }
 
 // 1. Generate Speech
