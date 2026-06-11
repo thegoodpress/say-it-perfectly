@@ -1,6 +1,6 @@
 require('dotenv').config();
 const express = require('express');
-const { GoogleGenerativeAI } = require('@google/generative-ai');
+const Anthropic = require('@anthropic-ai/sdk');
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const cors = require('cors');
 const bodyParser = require('body-parser');
@@ -8,7 +8,7 @@ const { Pool } = require('@neondatabase/serverless');
 const crypto = require('crypto');
 
 const app = express();
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
 // Database — Postgres only (optional)
 let db = null;
@@ -41,60 +41,51 @@ async function getQuery(query, params = []) {
 }
 
 async function generateSpeech(data) {
-  const { yourName, yourRole, partner1, partner2, yearsKnown, relationship, memory1, memory2, memory3, word1, word2, word3, tone, length } = data;
+  const { yourName, yourRole, partner1, partner2, yearsKnown, relationship,
+          memory1, memory2, memory3, word1, word2, word3, tone, length } = data;
   const coupleDisplay = `${partner1} and ${partner2}`;
 
-  const prompt = `Write a ${tone || 'heartfelt and warm'} wedding speech for a ${yourRole} named ${yourName}.
-The couple is ${coupleDisplay}.
-${yearsKnown ? `Known them for: ${yearsKnown}.` : ''}
-${relationship ? `Relationship context: ${relationship}.` : ''}
-${memory1 ? `Memory 1: ${memory1}.` : ''}
-${memory2 ? `Memory 2: ${memory2}.` : ''}
-${memory3 ? `Memory 3: ${memory3}.` : ''}
-${word1 || word2 || word3 ? `Describe the couple using: ${[word1,word2,word3].filter(Boolean).join(', ')}.` : ''}
-Length: ${length || 'medium (2-3 minutes)'}.
-Write in British English. Make it personal, genuine, and suitable to deliver aloud at a wedding.
-Output only the speech text, no titles or stage directions.`;
+  const lengthGuide = length === 'short' ? '2-3 minutes (around 350 words)'
+    : length === 'long' ? '6-8 minutes (around 1000 words)'
+    : '4-5 minutes (around 600 words)';
 
-  const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
-  const result = await model.generateContent(prompt);
-  return result.response.text();
+  const prompt = `Write a ${tone || 'heartfelt and warm'} wedding speech for ${yourName}, who is the ${yourRole || 'guest'} at the wedding of ${coupleDisplay}.
+
+Details:
+- Speaker has known them for: ${yearsKnown || 'several years'}
+- Their relationship: ${relationship || 'close friends'}
+- Memory 1: ${memory1 || ''}
+- Memory 2: ${memory2 || ''}
+- Memory 3: ${memory3 || ''}
+- Words that describe the couple: ${word1 || 'wonderful'}, ${word2 || 'kind'}, ${word3 || 'loving'}
+- Target length: ${lengthGuide}
+
+Write in a natural, spoken style. Include a proper opening, personal stories, heartfelt wishes, and a toast at the end. Do not use bullet points or headers — write it as flowing speech text only.`;
+
+  const message = await anthropic.messages.create({
+    model: 'claude-haiku-4-5-20251001',
+    max_tokens: 1500,
+    messages: [{ role: 'user', content: prompt }]
+  });
+
+  return message.content[0].text;
 }
 
 app.use(cors());
 app.use(express.static('public'));
 
-// DEBUG endpoint — remove after fixing
-app.get('/debug-gemini', async (req, res) => {
-  const keySet = !!process.env.GEMINI_API_KEY;
-  const keyPreview = process.env.GEMINI_API_KEY ? process.env.GEMINI_API_KEY.substring(0, 8) + '...' : 'NOT SET';
-  const models = ['gemini-1.5-flash', 'gemini-1.5-flash-latest', 'gemini-pro', 'gemini-2.0-flash'];
-  const results = {};
-  for (const modelName of models) {
-    try {
-      const model = genAI.getGenerativeModel({ model: modelName });
-      const result = await model.generateContent('Say hello in one word.');
-      results[modelName] = { success: true, response: result.response.text() };
-      break; // stop at first success
-    } catch (err) {
-      results[modelName] = { success: false, error: err.message?.substring(0, 200) };
-    }
-  }
-  res.json({ keySet, keyPreview, results });
-});
-
-// 1. Generate Speech (free preview — no payment required)
+// Generate Speech
 app.post('/generate-speech', bodyParser.json(), async (req, res) => {
   try {
     const speech = await generateSpeech(req.body);
     res.json({ speech });
-  } catch (err) {
-    console.error('Speech generation error:', err.message || err, err.status, err.errorDetails);
+  } catch (error) {
+    console.error('Speech generation error:', error);
     res.status(500).json({ error: 'Failed to generate speech. Please try again.' });
   }
 });
 
-// 2. Create Stripe Checkout Session
+// Create Stripe Checkout Session
 app.post('/create-checkout-session', bodyParser.json(), async (req, res) => {
   const { speechData, speechText } = req.body;
   try {
@@ -103,13 +94,16 @@ app.post('/create-checkout-session', bodyParser.json(), async (req, res) => {
       line_items: [{
         price_data: {
           currency: 'gbp',
-          product_data: { name: 'Personalised Wedding Speech' },
+          product_data: {
+            name: 'Personalised Wedding Speech',
+            description: 'Custom speech generated by Say It Perfectly',
+          },
           unit_amount: 1500,
         },
         quantity: 1,
       }],
       mode: 'payment',
-      success_url: `${req.headers.origin}/?success=true&session_id={CHECKOUT_SESSION_ID}`,
+      success_url: `https://buy.stripe.com/eVq00i24T6va01w0iU14400`,
       cancel_url: `${req.headers.origin}/?canceled=true`,
     });
 
@@ -125,8 +119,8 @@ app.post('/create-checkout-session', bodyParser.json(), async (req, res) => {
   }
 });
 
-// 3. Stripe Webhook
-app.post('/webhook', bodyParser.raw({type: 'application/json'}), async (req, res) => {
+// Stripe Webhook
+app.post('/webhook', bodyParser.raw({ type: 'application/json' }), async (req, res) => {
   const sig = req.headers['stripe-signature'];
   let event;
   try {
@@ -144,31 +138,36 @@ app.post('/webhook', bodyParser.raw({type: 'application/json'}), async (req, res
     ).catch(err => console.error('DB Update Error:', err));
   }
 
-  res.json({received: true});
+  res.json({ received: true });
 });
 
-// 4. Verify Code
+// Verify Code
 app.post('/verify-code', bodyParser.json(), async (req, res) => {
   const { code } = req.body;
 
   if (code === 'SIP-DEMO') {
     const demoData = {
-      yourName: 'Alex', yourRole: 'Best Man',
-      partner1: 'Sam', partner2: 'Jordan',
+      yourName: 'Alex',
+      yourRole: 'Best Man',
+      partner1: 'Sam',
+      partner2: 'Jordan',
       yearsKnown: '15 years',
       relationship: 'Best friends since university',
-      memory1: 'That time we got lost hiking in the Highlands',
+      memory1: 'That time we got lost in the Highlands',
       memory2: 'Helping Sam prepare for the big proposal',
-      memory3: 'Endless late nights of gaming and terrible pizza',
-      word1: 'loyal', word2: 'hilarious', word3: 'kind',
-      tone: 'funny and light', length: 'medium'
+      memory3: 'Endless nights of gaming and pizza',
+      word1: 'loyal',
+      word2: 'hilarious',
+      word3: 'kind',
+      tone: 'funny and light',
+      length: 'medium'
     };
     try {
       const speechText = await generateSpeech(demoData);
       return res.json({ success: true, speechData: demoData, speechText });
-    } catch (err) {
-      console.error('Demo speech error:', err.message || err, err.status, err.errorDetails);
-      return res.status(500).json({ error: 'Demo speech generation failed.' });
+    } catch (error) {
+      console.error('Demo speech error:', error);
+      return res.status(500).json({ error: 'Failed to generate demo speech. Please try again.' });
     }
   }
 
@@ -194,7 +193,9 @@ app.post('/verify-code', bodyParser.json(), async (req, res) => {
 
 if (process.env.NODE_ENV !== 'production') {
   const PORT = process.env.PORT || 3000;
-  app.listen(PORT, '0.0.0.0', () => console.log(`Server running on http://0.0.0.0:${PORT}`));
+  app.listen(PORT, '0.0.0.0', () => {
+    console.log(`Server running on http://0.0.0.0:${PORT}`);
+  });
 }
 
 module.exports = app;
