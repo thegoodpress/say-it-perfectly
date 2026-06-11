@@ -40,7 +40,7 @@
   <meta name="twitter:image" content="https://say-it-perfectly.vercel.app/og-image.png">
 
   <!-- Favicon -->
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎙️</text></svg>">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><circle cx=%2250%22 cy=%2250%22 r=%2248%22 fill=%22white%22 stroke=%22%23C9A84C%22 stroke-width=%222%22/><text x=%2250%22 y=%2265%22 font-family=%22serif%22 font-size=%2260%22 font-weight=%22bold%22 fill=%22%23C9A84C%22 text-anchor=%22middle%22>S</text></svg>">
 
   <script type="application/ld+json">
   {
@@ -1224,7 +1224,11 @@
         banner.innerHTML = "🛠️ DEMO MODE ACTIVE - Payment Skipped";
         document.body.prepend(banner);
         const codeInput = document.getElementById('paymentCode');
-        if (codeInput) codeInput.value = 'SIP-DEMO';
+        if (codeInput) {
+          codeInput.value = 'SIP-DEMO';
+          // Auto-unlock demo speech after a short delay so the user sees the banner/code
+          setTimeout(() => unlockSpeech(), 500);
+        }
       }
 
       if (window.performance) {
