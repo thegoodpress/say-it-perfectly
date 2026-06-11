@@ -1167,7 +1167,7 @@
         const data = await response.json();
 
         if (data.success) {
-          document.getElementById('speechBody').textContent = data.speechText;
+          document.getElementById('speechBody').textContent = window._generatedSpeech || data.speechText;
           document.getElementById('paymentSection').style.display = 'none';
           document.getElementById('speechSection').classList.add('active');
           document.getElementById('speechSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
