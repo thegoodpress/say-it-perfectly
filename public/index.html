@@ -45,6 +45,97 @@
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "How does it work?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Answer a few questions about your relationship, memories, and preferred tone, and our AI writes a custom speech in under 2 minutes."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is the speech truly personalised?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. We don't use templates. The speech is built entirely from the specific details you provide about the couple and your shared history."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What roles do you support?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "We generate speeches for Best Men, Maids of Honour, Fathers of the Bride, Grooms, Brides, and any other wedding guest."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I edit the speech?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Absolutely. Once unlocked, you can copy the speech to your clipboard and refine it as much as you like to make it perfect."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How much does it cost?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "It's a one-time payment of £15. No subscriptions, no hidden fees — just a great speech ready for the big day."
+        }
+      }
+    ]
+  }
+  </script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    "name": "How to get your personalised wedding speech",
+    "description": "Get a heartfelt, custom wedding speech in 4 easy steps.",
+    "step": [
+      {
+        "@type": "HowToStep",
+        "name": "Answer the form",
+        "text": "Tell us about your relationship and share 3 favorite memories.",
+        "url": "https://say-it-perfectly.vercel.app/#form"
+      },
+      {
+        "@type": "HowToStep",
+        "name": "Choose your tone",
+        "text": "Select whether you want it heartfelt, funny, or a mix of both.",
+        "url": "https://say-it-perfectly.vercel.app/#form"
+      },
+      {
+        "@type": "HowToStep",
+        "name": "Generate & Preview",
+        "text": "Our AI crafts your unique speech in seconds.",
+        "url": "https://say-it-perfectly.vercel.app/#form"
+      },
+      {
+        "@type": "HowToStep",
+        "name": "Unlock & Deliver",
+        "text": "Make a one-time payment to unlock your speech and get ready for the big day.",
+        "url": "https://say-it-perfectly.vercel.app/#form"
+      }
+    ],
+    "totalTime": "PT2M",
+    "supply": [
+      {
+        "@type": "HowToSupply",
+        "name": "Your memories and stories"
+      }
+    ]
+  }
+  </script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
     "@type": "SoftwareApplication",
     "name": "Say It Perfectly",
     "applicationCategory": "LifestyleApplication",
@@ -628,8 +719,75 @@
       text-decoration: none;
     }
 
+    /* ===== TESTIMONIALS ===== */
+    .testimonials {
+      padding: 80px 0;
+      background: #fdfdfd;
+      border-top: 1px solid #f5f5f5;
+    }
+    .testimonials h2 {
+      text-align: center;
+      margin-bottom: 50px;
+    }
+    .testimonial-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 32px;
+    }
+    .testimonial-item {
+      background: #fff;
+      padding: 32px;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+      border: 1px solid #f0f0f0;
+    }
+    .testimonial-text {
+      font-style: italic;
+      color: #444;
+      margin-bottom: 20px;
+      font-size: 0.95rem;
+    }
+    .testimonial-author {
+      font-weight: 600;
+      color: #111;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /* ===== FAQ SECTION ===== */
+    .faq-section {
+      padding: 80px 0;
+      background: #fff;
+      border-top: 1px solid #f5f5f5;
+    }
+    .faq-section h2 {
+      text-align: center;
+      margin-bottom: 50px;
+    }
+    .faq-grid {
+      max-width: 700px;
+      margin: 0 auto;
+    }
+    .faq-item {
+      margin-bottom: 32px;
+    }
+    .faq-item h3 {
+      font-size: 1.1rem;
+      margin-bottom: 12px;
+      color: #111;
+    }
+    .faq-item p {
+      color: #666;
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+
     /* ===== RESPONSIVE ===== */
     @media (max-width: 768px) {
+      .testimonial-grid {
+        grid-template-columns: 1fr;
+      }
       .trust-grid {
         grid-template-columns: 1fr;
         gap: 32px;
@@ -696,6 +854,27 @@
     </div>
   </section>
 
+  <!-- ===== TESTIMONIALS ===== -->
+  <section class="testimonials">
+    <div class="container">
+      <h2>Loved by Wedding Speakers</h2>
+      <div class="testimonial-grid">
+        <div class="testimonial-item">
+          <p class="testimonial-text">"Saved my life! I was dreading the Best Man speech for weeks. This gave me the perfect foundation and some great jokes."</p>
+          <p class="testimonial-author">— James S., Best Man</p>
+        </div>
+        <div class="testimonial-item">
+          <p class="testimonial-text">"The Father of the Bride speech it generated was so heartfelt. My daughter was in tears (the good kind!). Highly recommend."</p>
+          <p class="testimonial-author">— David R., Father of the Bride</p>
+        </div>
+        <div class="testimonial-item">
+          <p class="testimonial-text">"Fast, easy, and actually sounds like me. Best £15 I've spent on this wedding. It took all the pressure off."</p>
+          <p class="testimonial-author">— Sarah M., Maid of Honour</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- ===== SPEECH GUIDES ===== -->
   <section class="guides-section">
     <div class="container">
@@ -707,6 +886,35 @@
         <a href="/father-of-the-bride-speech" class="guide-link">👨‍👧 Father of the Bride →</a>
         <a href="/maid-of-honour-speech" class="guide-link">💐 Maid of Honour →</a>
         <a href="/funny-wedding-speech" class="guide-link">😂 Funny Wedding Speech →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FAQ ===== -->
+  <section class="faq-section">
+    <div class="container">
+      <h2>Frequently Asked Questions</h2>
+      <div class="faq-grid">
+        <div class="faq-item">
+          <h3>How does it work?</h3>
+          <p>Answer a few questions about your relationship, memories, and preferred tone, and our AI writes a custom speech in under 2 minutes.</p>
+        </div>
+        <div class="faq-item">
+          <h3>Is the speech truly personalised?</h3>
+          <p>Yes. We don't use templates. The speech is built entirely from the specific details you provide about the couple and your shared history.</p>
+        </div>
+        <div class="faq-item">
+          <h3>What roles do you support?</h3>
+          <p>We generate speeches for Best Men, Maids of Honour, Fathers of the Bride, Grooms, Brides, and any other wedding guest.</p>
+        </div>
+        <div class="faq-item">
+          <h3>Can I edit the speech?</h3>
+          <p>Absolutely. Once unlocked, you can copy the speech to your clipboard and refine it as much as you like to make it perfect.</p>
+        </div>
+        <div class="faq-item">
+          <h3>How much does it cost?</h3>
+          <p>It's a one-time payment of £15. No subscriptions, no hidden fees — just a great speech ready for the big day.</p>
+        </div>
       </div>
     </div>
   </section>
