@@ -49,34 +49,26 @@
     "mainEntity": [
       {
         "@type": "Question",
-        "name": "How does it work?",
+        "name": "How does the speech writing work?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Answer a few questions about your relationship, memories, and preferred tone, and our AI writes a custom speech in under 2 minutes."
+          "text": "You answer 8 simple questions about your relationship, shared memories, and preferred tone. Our AI then uses those specific details to craft a completely custom speech in under 2 minutes. It's not a template; it's a speech written just for you."
         }
       },
       {
         "@type": "Question",
-        "name": "Is the speech truly personalised?",
+        "name": "Who can use Say It Perfectly?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Yes. We don't use templates. The speech is built entirely from the specific details you provide about the couple and your shared history."
+          "text": "We support all roles including Best Men, Maids of Honour, Fathers of the Bride, Grooms, Brides, and any other wedding guest who needs a heartfelt, personal speech."
         }
       },
       {
         "@type": "Question",
-        "name": "What roles do you support?",
+        "name": "Can I edit the speech after it's generated?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "We generate speeches for Best Men, Maids of Honour, Fathers of the Bride, Grooms, Brides, and any other wedding guest."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Can I edit the speech?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Absolutely. Once unlocked, you can copy the speech to your clipboard and refine it as much as you like to make it perfect."
+          "text": "Absolutely. Once you unlock your speech, you can copy it to your clipboard and make any refinements you like to ensure every word feels exactly right."
         }
       },
       {
@@ -84,7 +76,23 @@
         "name": "How much does it cost?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "It's a one-time payment of £15. No subscriptions, no hidden fees — just a great speech ready for the big day."
+          "text": "It's a simple, one-time payment of £15. There are no subscriptions, no hidden fees, and no upsells. Just a great speech for the price of a couple of drinks."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What if I don't like the speech?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Our AI is designed to be highly flexible. If you want a different result, you can adjust your answers and generate a new version. We want you to be 100% confident when you stand up to speak."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How long does it take?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Most users finish the form in about 90 seconds. The speech itself is generated in less than 30 seconds. You can go from a blank page to a finished speech in under 2 minutes."
         }
       }
     ]
@@ -96,30 +104,54 @@
     "@context": "https://schema.org",
     "@type": "HowTo",
     "name": "How to get your personalised wedding speech",
-    "description": "Get a heartfelt, custom wedding speech in 4 easy steps.",
+    "description": "Get a heartfelt, custom wedding speech in 8 simple steps.",
     "step": [
       {
         "@type": "HowToStep",
-        "name": "Answer the form",
-        "text": "Tell us about your relationship and share 3 favorite memories.",
+        "name": "Your Details",
+        "text": "Enter your name and your role at the wedding.",
         "url": "https://say-it-perfectly.vercel.app/#form"
       },
       {
         "@type": "HowToStep",
-        "name": "Choose your tone",
-        "text": "Select whether you want it heartfelt, funny, or a mix of both.",
+        "name": "The Couple",
+        "text": "Enter the names of the couple and the wedding date.",
         "url": "https://say-it-perfectly.vercel.app/#form"
       },
       {
         "@type": "HowToStep",
-        "name": "Generate & Preview",
-        "text": "Our AI crafts your unique speech in seconds.",
+        "name": "Your Relationship",
+        "text": "Describe how long you've known them and your relationship.",
         "url": "https://say-it-perfectly.vercel.app/#form"
       },
       {
         "@type": "HowToStep",
-        "name": "Unlock & Deliver",
-        "text": "Make a one-time payment to unlock your speech and get ready for the big day.",
+        "name": "Favourite Memories",
+        "text": "Share three favorite memories or stories about the couple.",
+        "url": "https://say-it-perfectly.vercel.app/#form"
+      },
+      {
+        "@type": "HowToStep",
+        "name": "Describe the Couple",
+        "text": "Provide three words that best capture them as a couple.",
+        "url": "https://say-it-perfectly.vercel.app/#form"
+      },
+      {
+        "@type": "HowToStep",
+        "name": "Tone",
+        "text": "Select the desired tone: heartfelt, funny, or a mix.",
+        "url": "https://say-it-perfectly.vercel.app/#form"
+      },
+      {
+        "@type": "HowToStep",
+        "name": "Topics to Avoid",
+        "text": "Mention any topics or stories that should be steered clear of.",
+        "url": "https://say-it-perfectly.vercel.app/#form"
+      },
+      {
+        "@type": "HowToStep",
+        "name": "Desired Length",
+        "text": "Choose the length of the speech: 2, 4, or 6 minutes.",
         "url": "https://say-it-perfectly.vercel.app/#form"
       }
     ],
@@ -130,6 +162,19 @@
         "name": "Your memories and stories"
       }
     ]
+  }
+  </script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [{
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://say-it-perfectly.vercel.app/"
+    }]
   }
   </script>
 
@@ -770,17 +815,38 @@
       margin: 0 auto;
     }
     .faq-item {
-      margin-bottom: 32px;
+      border-bottom: 1px solid #eee;
+      margin-bottom: 0;
     }
-    .faq-item h3 {
-      font-size: 1.1rem;
-      margin-bottom: 12px;
+    .faq-item summary {
+      padding: 20px 0;
+      font-weight: 500;
+      cursor: pointer;
+      list-style: none;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
       color: #111;
+      font-size: 1.05rem;
+    }
+    .faq-item summary::-webkit-details-marker {
+      display: none;
+    }
+    .faq-item summary::after {
+      content: '+';
+      font-size: 1.4rem;
+      color: #C9A84C;
+      transition: transform 0.3s ease;
+    }
+    .faq-item[open] summary::after {
+      transform: rotate(45deg);
     }
     .faq-item p {
       color: #666;
       font-size: 0.95rem;
       line-height: 1.6;
+      padding-bottom: 20px;
+      margin: 0;
     }
 
     /* ===== RESPONSIVE ===== */
@@ -836,17 +902,17 @@
     <div class="container-wide">
       <div class="trust-grid">
         <div class="trust-item">
-          <div class="trust-icon">✍️</div>
+          <div class="trust-icon" role="img" aria-label="Writing icon">✍️</div>
           <h3>Personalised to your story</h3>
           <p>Every speech is crafted from your memories and relationship — never templated.</p>
         </div>
         <div class="trust-item">
-          <div class="trust-icon">⚡</div>
+          <div class="trust-icon" role="img" aria-label="Fast lightning icon">⚡</div>
           <h3>Ready in under 2 minutes</h3>
           <p>Answer a few quick questions and your speech is generated instantly.</p>
         </div>
         <div class="trust-item">
-          <div class="trust-icon">💛</div>
+          <div class="trust-icon" role="img" aria-label="Heart icon">💛</div>
           <h3>Loved by 500+ wedding guests</h3>
           <p>Couples and guests rave about speeches written with Say It Perfectly.</p>
         </div>
@@ -859,17 +925,26 @@
     <div class="container">
       <h2>Loved by Wedding Speakers</h2>
       <div class="testimonial-grid">
-        <div class="testimonial-item">
-          <p class="testimonial-text">"Saved my life! I was dreading the Best Man speech for weeks. This gave me the perfect foundation and some great jokes."</p>
-          <p class="testimonial-author">— James S., Best Man</p>
+        <div class="testimonial-item" itemscope itemtype="https://schema.org/Review">
+          <div itemprop="reviewRating" itemscope itemtype="https://schema.org/Rating">
+            <meta itemprop="ratingValue" content="5">
+          </div>
+          <p class="testimonial-text" itemprop="reviewBody">"Saved my life! I was dreading the Best Man speech for weeks. This gave me the perfect foundation and some great jokes."</p>
+          <p class="testimonial-author">— <span itemprop="author" itemscope itemtype="https://schema.org/Person"><span itemprop="name">James S.</span></span>, Best Man</p>
         </div>
-        <div class="testimonial-item">
-          <p class="testimonial-text">"The Father of the Bride speech it generated was so heartfelt. My daughter was in tears (the good kind!). Highly recommend."</p>
-          <p class="testimonial-author">— David R., Father of the Bride</p>
+        <div class="testimonial-item" itemscope itemtype="https://schema.org/Review">
+          <div itemprop="reviewRating" itemscope itemtype="https://schema.org/Rating">
+            <meta itemprop="ratingValue" content="5">
+          </div>
+          <p class="testimonial-text" itemprop="reviewBody">"The Father of the Bride speech it generated was so heartfelt. My daughter was in tears (the good kind!). Highly recommend."</p>
+          <p class="testimonial-author">— <span itemprop="author" itemscope itemtype="https://schema.org/Person"><span itemprop="name">David R.</span></span>, Father of the Bride</p>
         </div>
-        <div class="testimonial-item">
-          <p class="testimonial-text">"Fast, easy, and actually sounds like me. Best £15 I've spent on this wedding. It took all the pressure off."</p>
-          <p class="testimonial-author">— Sarah M., Maid of Honour</p>
+        <div class="testimonial-item" itemscope itemtype="https://schema.org/Review">
+          <div itemprop="reviewRating" itemscope itemtype="https://schema.org/Rating">
+            <meta itemprop="ratingValue" content="5">
+          </div>
+          <p class="testimonial-text" itemprop="reviewBody">"Fast, easy, and actually sounds like me. Best £15 I've spent on this wedding. It took all the pressure off."</p>
+          <p class="testimonial-author">— <span itemprop="author" itemscope itemtype="https://schema.org/Person"><span itemprop="name">Sarah M.</span></span>, Maid of Honour</p>
         </div>
       </div>
     </div>
@@ -882,10 +957,10 @@
       <h2>Not sure where to start?</h2>
       <p>Read our free guides for every role — packed with examples, structure tips, and opening lines that actually work.</p>
       <div class="guides-grid">
-        <a href="/best-man-speech" class="guide-link">✍️ Best Man Speech →</a>
-        <a href="/father-of-the-bride-speech" class="guide-link">👨‍👧 Father of the Bride →</a>
-        <a href="/maid-of-honour-speech" class="guide-link">💐 Maid of Honour →</a>
-        <a href="/funny-wedding-speech" class="guide-link">😂 Funny Wedding Speech →</a>
+        <a href="/best-man-speech" class="guide-link"><span role="img" aria-label="Writing icon">✍️</span> Best Man Speech →</a>
+        <a href="/father-of-the-bride-speech" class="guide-link"><span role="img" aria-label="Father icon">👨‍👧</span> Father of the Bride →</a>
+        <a href="/maid-of-honour-speech" class="guide-link"><span role="img" aria-label="Bouquet icon">💐</span> Maid of Honour →</a>
+        <a href="/funny-wedding-speech" class="guide-link"><span role="img" aria-label="Laughing icon">😂</span> Funny Wedding Speech →</a>
       </div>
     </div>
   </section>
@@ -895,26 +970,30 @@
     <div class="container">
       <h2>Frequently Asked Questions</h2>
       <div class="faq-grid">
-        <div class="faq-item">
-          <h3>How does it work?</h3>
-          <p>Answer a few questions about your relationship, memories, and preferred tone, and our AI writes a custom speech in under 2 minutes.</p>
-        </div>
-        <div class="faq-item">
-          <h3>Is the speech truly personalised?</h3>
-          <p>Yes. We don't use templates. The speech is built entirely from the specific details you provide about the couple and your shared history.</p>
-        </div>
-        <div class="faq-item">
-          <h3>What roles do you support?</h3>
-          <p>We generate speeches for Best Men, Maids of Honour, Fathers of the Bride, Grooms, Brides, and any other wedding guest.</p>
-        </div>
-        <div class="faq-item">
-          <h3>Can I edit the speech?</h3>
-          <p>Absolutely. Once unlocked, you can copy the speech to your clipboard and refine it as much as you like to make it perfect.</p>
-        </div>
-        <div class="faq-item">
-          <h3>How much does it cost?</h3>
-          <p>It's a one-time payment of £15. No subscriptions, no hidden fees — just a great speech ready for the big day.</p>
-        </div>
+        <details class="faq-item">
+          <summary>How does the speech writing work?</summary>
+          <p>You answer 8 simple questions about your relationship, shared memories, and preferred tone. Our AI then uses those specific details to craft a completely custom speech in under 2 minutes. It's not a template; it's a speech written just for you.</p>
+        </details>
+        <details class="faq-item">
+          <summary>Who can use Say It Perfectly?</summary>
+          <p>We support all roles including Best Men, Maids of Honour, Fathers of the Bride, Grooms, Brides, and any other wedding guest who needs a heartfelt, personal speech.</p>
+        </details>
+        <details class="faq-item">
+          <summary>Can I edit the speech after it's generated?</summary>
+          <p>Absolutely. Once you unlock your speech, you can copy it to your clipboard and make any refinements you like to ensure every word feels exactly right.</p>
+        </details>
+        <details class="faq-item">
+          <summary>How much does it cost?</summary>
+          <p>It's a simple, one-time payment of £15. There are no subscriptions, no hidden fees, and no upsells. Just a great speech for the price of a couple of drinks.</p>
+        </details>
+        <details class="faq-item">
+          <summary>What if I don't like the speech?</summary>
+          <p>Our AI is designed to be highly flexible. If you want a different result, you can adjust your answers and generate a new version. We want you to be 100% confident when you stand up to speak.</p>
+        </details>
+        <details class="faq-item">
+          <summary>How long does it take?</summary>
+          <p>Most users finish the form in about 90 seconds. The speech itself is generated in less than 30 seconds. You can go from a blank page to a finished speech in under 2 minutes.</p>
+        </details>
       </div>
     </div>
   </section>
